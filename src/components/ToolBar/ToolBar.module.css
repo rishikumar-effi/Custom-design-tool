@@ -120,5 +120,18 @@
                 }
             }
         }
+
+        @media (max-width: 500px) {
+            &{
+                gap: .5em;
+            }
+            
+            & li label {
+                button {
+                    width: 2em !important;
+                    height: 2em !important;
+                }
+            }
+        }
     }
 }

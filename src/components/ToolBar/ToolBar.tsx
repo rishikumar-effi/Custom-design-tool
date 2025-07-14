@@ -2,7 +2,7 @@ import IconButton from '../IconButton';
 import styles from './ToolBar.module.css';
 import { ToolBarIcons, Icon } from '../Icons';
 
-const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll,Export } = ToolBarIcons;
+const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
 
 const ToolBar = () => {
     return <section className={styles.component}>
@@ -79,7 +79,7 @@ const ToolBar = () => {
             </li>
         </ul>
         <ul>
-            <li>
+            {/* <li>
                 <label htmlFor="export-svg">
                     <IconButton id="export-svg" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
                         <Icon style={{width: '90%', height: '90%'}}>
@@ -87,6 +87,16 @@ const ToolBar = () => {
                         </Icon>
                     </IconButton>
                     <span>Export as SVG</span>
+                </label>
+            </li> */}
+            <li>
+                <label htmlFor="get-svg-code">
+                    <IconButton id="get-svg-code" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
+                        <Icon style={{width: '80%', height: '80%'}}>
+                            <GetSVG />
+                        </Icon>
+                    </IconButton>
+                    <span>Get SVG</span>
                 </label>
             </li>
         </ul>
