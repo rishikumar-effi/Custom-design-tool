@@ -1,11 +1,11 @@
 .component {
     height: fit-content;
-    
+
     ul {
         display: flex;
         flex-direction: column;
         gap: 1em;
-        
+
         & li {
             color: #e0e0e0;
             display: flex;
@@ -13,11 +13,11 @@
             border-radius: .5em;
             transition: .3s;
 
-            &:hover{
+            &:hover {
                 border-color: #838383;
             }
 
-            label{
+            label {
                 cursor: pointer;
                 flex: 1;
                 display: flex;
@@ -29,25 +29,46 @@
                 background: rgb(45, 45, 45);
                 border-radius: inherit;
 
-                button{
+                button {
                     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
                 }
 
-                span{
+                span {
                     font-size: 1.4em;
                 }
 
-                &:active button{
+                &:active button {
                     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 7px -3px, rgba(0, 0, 0, 0.2) 0px 0px 0px inset;
                     transform: scale(.95);
                 }
             }
 
-            &:hover label{
+            &:hover label {
                 opacity: 1;
                 background: rgb(59, 59, 59);
             }
 
+        }
+
+        @media (max-width: 600px) {
+            & {
+                flex-direction: row;
+            }
+
+            & li label {
+                &{
+                    padding: .5em !important;
+                }
+
+                button{
+                    width: 2.8em !important;
+                    height: 2.8em !important;
+                }
+    
+                span {
+                    display: none;
+                }
+            } 
         }
     }
 }

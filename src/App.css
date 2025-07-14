@@ -5,21 +5,30 @@ body,
   min-height: 100vh;
 }
 
-#root{
+#root {
   display: grid;
   place-items: center;
   padding: 2em;
 
-  & #main{
+  & #main {
     width: 100%;
     max-width: 100em;
 
     display: grid;
+
     grid-template-columns: auto 1fr;
     gap: 2em;
   }
+
+  @media (max-width: 600px) {
+    & #main {
+      grid-template-columns: unset;
+
+      grid-template-rows: auto 1fr;
+    }
+  }
 }
 
-.testing{
+.testing {
   border: 1px solid #fff;
 }
