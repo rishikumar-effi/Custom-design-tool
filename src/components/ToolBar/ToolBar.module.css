@@ -1,5 +1,14 @@
 .component {
-    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1em;
+
+    @media (max-width: 600px){
+        &{
+            flex-direction: row;
+        }
+    }
 
     ul {
         display: flex;

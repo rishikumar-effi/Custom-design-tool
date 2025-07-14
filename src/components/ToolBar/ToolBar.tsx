@@ -2,14 +2,14 @@ import IconButton from '../IconButton';
 import styles from './ToolBar.module.css';
 import { ToolBarIcons, Icon } from '../Icons';
 
-const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll } = ToolBarIcons;
+const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll,Export } = ToolBarIcons;
 
 const ToolBar = () => {
     return <section className={styles.component}>
         <ul>
             <li>
-                <label htmlFor="draw-circle">
-                    <IconButton id="draw-circle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Draw Circle">
+                <label htmlFor="draw-circle" title="Draw Circle">
+                    <IconButton id="draw-circle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '80%', height: '80%'}}>
                             <DrawCircle />
                         </Icon>
@@ -18,8 +18,8 @@ const ToolBar = () => {
                 </label>
             </li>
             <li>
-                <label htmlFor="draw-rectangle">
-                    <IconButton id="draw-rectangle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Draw Rectangle">
+                <label htmlFor="draw-rectangle" title="Draw Rectangle">
+                    <IconButton id="draw-rectangle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '80%', height: '80%'}}>
                             <DrawRectangle />
                         </Icon>
@@ -28,8 +28,8 @@ const ToolBar = () => {
                 </label>
             </li>
             <li>
-                <label htmlFor="add-text">
-                    <IconButton id="add-text" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Add Text">
+                <label htmlFor="add-text" title="Add Text">
+                    <IconButton id="add-text" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '80%', height: '80%'}}>
                             <AddText />
                         </Icon>
@@ -38,8 +38,8 @@ const ToolBar = () => {
                 </label>
             </li>
             <li>
-                <label htmlFor="undo">
-                    <IconButton id="undo" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Undo">
+                <label htmlFor="undo" title="Undo">
+                    <IconButton id="undo" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '70%', height: '70%'}}>
                             <Undo />
                         </Icon>
@@ -48,8 +48,8 @@ const ToolBar = () => {
                 </label>
             </li>
             <li>
-                <label htmlFor="redo">
-                    <IconButton id="redo" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Redo">
+                <label htmlFor="redo" title="Redo">
+                    <IconButton id="redo" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '70%', height: '70%'}}>
                             <Redo />
                         </Icon>
@@ -58,8 +58,8 @@ const ToolBar = () => {
                 </label>
             </li>
             <li>
-                <label htmlFor="delete">
-                    <IconButton id="delete" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Delete">
+                <label htmlFor="delete" title="Delete">
+                    <IconButton id="delete" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '70%', height: '70%'}}>
                             <Delete />    
                         </Icon>
@@ -75,6 +75,18 @@ const ToolBar = () => {
                         </Icon>
                     </IconButton>
                     <span>Clear All</span>
+                </label>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <label htmlFor="export-svg">
+                    <IconButton id="export-svg" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
+                        <Icon style={{width: '90%', height: '90%'}}>
+                            <Export />
+                        </Icon>
+                    </IconButton>
+                    <span>Export as SVG</span>
                 </label>
             </li>
         </ul>
