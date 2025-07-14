@@ -4,8 +4,8 @@
     justify-content: space-between;
     gap: 1em;
 
-    @media (max-width: 600px){
-        &{
+    @media (max-width: 600px) {
+        & {
             flex-direction: row;
         }
     }
@@ -18,12 +18,17 @@
         & li {
             color: #e0e0e0;
             display: flex;
-            border: 1px solid #595959;
+            border: 1px dashed #3e3e3e;
             border-radius: .5em;
             transition: .3s;
 
-            &:hover {
-                border-color: #838383;
+            &:hover:has(button:not(:disabled)),
+            &.clicked {
+                border-color: #626262;
+            }
+
+            & label:has(button:disabled):hover {
+                cursor: not-allowed;
             }
 
             label {
@@ -31,12 +36,13 @@
                 flex: 1;
                 display: flex;
                 align-items: center;
-                gap: .8em;
+                gap: 1em;
                 opacity: .8;
                 transition: .3s;
-                padding: .5em 1em;
-                background: rgb(45, 45, 45);
+                padding: .6em 2.5em .6em 1em;
+                background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45));
                 border-radius: inherit;
+                box-shadow: inset 0px 0px 10px rgba(0, 0, 0, .15);
 
                 button {
                     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -44,6 +50,8 @@
 
                 span {
                     font-size: 1.4em;
+                    font-weight: 100;
+                    letter-spacing: .5px;
                 }
 
                 &:active button {
@@ -52,9 +60,38 @@
                 }
             }
 
-            &:hover label {
+            &:hover label:has(button:not(:disabled)),
+            &.clicked label{
                 opacity: 1;
-                background: rgb(59, 59, 59);
+                box-shadow: unset;
+                /* background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45)); */
+            }
+
+            &.clicked label button{
+                opacity: 1;
+            }
+
+            &.clicked{
+                position: relative;
+                border-style: solid;
+            }
+
+            &:active{
+                border-style: solid;
+            }
+
+            &.clicked::before{
+                content: '';
+                --size: .5em;
+                width: var(--size);
+                height: var(--size);
+                background: #e0e0e0;
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 1em;
+                box-shadow: 0px 0px 10px #c2c2c2;
             }
 
         }
@@ -64,20 +101,24 @@
                 flex-direction: row;
             }
 
+            & li.clicked::before{
+                content: unset;
+            }
+
             & li label {
-                &{
+                & {
                     padding: .5em !important;
                 }
 
-                button{
+                button {
                     width: 2.8em !important;
                     height: 2.8em !important;
                 }
-    
+
                 span {
                     display: none;
                 }
-            } 
+            }
         }
     }
 }

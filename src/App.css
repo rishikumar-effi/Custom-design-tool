@@ -9,6 +9,7 @@ body,
   display: grid;
   place-items: center;
   padding: 2em;
+  background: rgb(66 66 66);
 
   & #main {
     width: 100%;
@@ -18,15 +19,21 @@ body,
 
     grid-template-columns: auto 1fr;
     gap: 2em;
-  }
+    /* border: 1px solid #595959; */
+    border-radius: 1em;
+    padding: 1.5em;
+    background: rgb(30,32,34);
+    box-shadow: 0px 10px 10px rgba(0,0,0,.15);
 
-  @media (max-width: 600px) {
-    & #main {
-      grid-template-columns: unset;
-
-      grid-template-rows: auto 1fr;
+    @media (max-width: 600px) {
+      &{
+        grid-template-columns: unset;
+        grid-template-rows: auto 1fr;
+        padding: 1em;
+      }
     }
   }
+
 }
 
 .testing {

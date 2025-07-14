@@ -7,7 +7,7 @@ const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll,Export 
 const ToolBar = () => {
     return <section className={styles.component}>
         <ul>
-            <li>
+            <li className={styles.clicked}>
                 <label htmlFor="draw-circle" title="Draw Circle">
                     <IconButton id="draw-circle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '80%', height: '80%'}}>
@@ -17,7 +17,7 @@ const ToolBar = () => {
                     <span>Draw Circle</span>
                 </label>
             </li>
-            <li>
+            <li className={styles.clicked}>
                 <label htmlFor="draw-rectangle" title="Draw Rectangle">
                     <IconButton id="draw-rectangle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '80%', height: '80%'}}>
@@ -59,7 +59,7 @@ const ToolBar = () => {
             </li>
             <li>
                 <label htmlFor="delete" title="Delete">
-                    <IconButton id="delete" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconButton disabled id="delete" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{width: '70%', height: '70%'}}>
                             <Delete />    
                         </Icon>
