@@ -1,0 +1,10 @@
+.component{
+    line-height: 0;
+    border-radius: .5em;
+    opacity: .8;
+    transition: .3s;
+
+    &:hover{
+        opacity: 1;
+    }
+}

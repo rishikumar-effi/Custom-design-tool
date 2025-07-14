@@ -1,0 +1,11 @@
+.component{
+    border: 2px solid #595959;
+    --bg: #3a3a3a;
+
+    background-image:  repeating-linear-gradient(45deg, var(--bg) 25%, transparent 25%, transparent 75%, var(--bg) 75%, var(--bg)), repeating-linear-gradient(45deg, var(--bg) 25%, transparent 25%, transparent 75%, var(--bg) 75%, var(--bg));
+    background-position: 0 0, 1em 1em;
+    background-size: 2em 2em;
+    border-radius: .5em;
+    box-shadow: inset 0px 0px 10px rgba(0,0,0,.5);
+    overflow: hidden;
+}

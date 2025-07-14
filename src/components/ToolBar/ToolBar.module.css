@@ -1,0 +1,53 @@
+.component {
+    height: fit-content;
+    
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        
+        & li {
+            color: #e0e0e0;
+            display: flex;
+            border: 1px solid #595959;
+            border-radius: .5em;
+            transition: .3s;
+
+            &:hover{
+                border-color: #838383;
+            }
+
+            label{
+                cursor: pointer;
+                flex: 1;
+                display: flex;
+                align-items: center;
+                gap: .8em;
+                opacity: .8;
+                transition: .3s;
+                padding: .5em 1em;
+                background: rgb(45, 45, 45);
+                border-radius: inherit;
+
+                button{
+                    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+                }
+
+                span{
+                    font-size: 1.4em;
+                }
+
+                &:active button{
+                    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 7px -3px, rgba(0, 0, 0, 0.2) 0px 0px 0px inset;
+                    transform: scale(.95);
+                }
+            }
+
+            &:hover label{
+                opacity: 1;
+                background: rgb(59, 59, 59);
+            }
+
+        }
+    }
+}
