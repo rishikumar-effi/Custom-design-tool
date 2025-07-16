@@ -46,10 +46,6 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
 
-  useEffect(() => {
-    // console.log(activeObject);
-  }, [activeObject]);
-
   const addCircle = useCallback(() => {
     if (!editor || !window.fabric) return;
     const circle = new window.fabric.Circle({
@@ -57,7 +53,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       fill: color,
       left: 100,
       top: 100,
-      stroke: "rgb(30,32,34)",
+      stroke: "#1e2022",
       strokeWidth: 1,
     });
     circle.set({id: crypto.randomUUID()});
@@ -74,7 +70,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       fill: color,
       left: 100,
       top: 100,
-      stroke: "rgb(30,32,34)",
+      stroke: "#1e2022",
       strokeWidth: 1,
     });
     rect.set({id: crypto.randomUUID()});

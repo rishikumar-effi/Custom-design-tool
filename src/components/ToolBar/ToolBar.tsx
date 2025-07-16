@@ -2,37 +2,11 @@ import IconButton from '../IconButton';
 import styles from './ToolBar.module.css';
 import { ToolBarIcons, Icon } from '../Icons';
 import { useTool } from '../../context/ToolProvider';
-import React from 'react';
 
 const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
 
-const labelElement = (label: string) => {
-    let elementName;
-    let element;
-
-    switch (label) {
-        case 'circle':
-            element = DrawCircle;
-            elementName = "Circle";
-            break;
-        case 'rect':
-            element = DrawRectangle;
-            elementName = "Rectangle";
-            break;
-        case 'i-text':
-            element = AddText;
-            elementName = "Text";
-            break;
-        default:
-            elementName = "Svg Element";
-            break;
-    }
-
-    return { element, elementName }
-}
-
 const ToolBar = () => {
-    const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG, highlightObject } = useTool();
+    const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG } = useTool();
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
@@ -126,27 +100,6 @@ const ToolBar = () => {
                 </label>
             </li>
         </ul>
-        <div className={styles['object-lists']}>
-            {objects.length > 0 &&
-                <fieldset>
-                    <legend>Element(s) in Canvas</legend>
-                    <ul>
-                        {
-                            objects.map((obj: any) => {
-                                const {element, elementName} = labelElement(obj.type);
-                                
-                                return <li key={obj.id} data-focused={activeObject && activeObject.id === obj.id} onClick={()=>highlightObject(obj)}>
-                                    <Icon style={{width: '1em', height: '1em', color: '#e0e0e0'}}>
-                                        {element && React.createElement(element)}
-                                    </Icon>
-                                    <span>{elementName}</span>
-                                </li>
-                            })
-                        }
-                    </ul>
-                </fieldset>
-            }
-        </div>
         <ul>
             {/* <li>
                 <label htmlFor="export-svg">
