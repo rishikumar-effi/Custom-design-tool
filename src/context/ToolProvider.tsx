@@ -28,6 +28,9 @@ type ToolContextType = {
   objects: fabric.Object[];
   activeObject: fabric.Object | null;
   setActiveObject: (obj: fabric.Object | null) => void;
+  deleteSelected: () => void;
+  redoStack: any;
+  exportAsSVG: () => string | null;
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -44,8 +47,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const redoStack = useRef<fabric.Object[]>([]);
 
   useEffect(() => {
-    console.log(activeObject?.type);
-  }, [activeObject])
+    // console.log(activeObject);
+  }, [activeObject]);
 
   const addCircle = useCallback(() => {
     if (!editor || !window.fabric) return;
@@ -110,6 +113,19 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [editor]);
 
+  const deleteSelected = () => {
+    if (!editor) return;
+    const canvas = editor.canvas;
+
+    const activeObjects = canvas.getActiveObjects();
+
+    if (activeObjects.length) {
+      activeObjects.forEach((obj: fabric.Object) => canvas.remove(obj));
+      canvas.discardActiveObject();
+      canvas.requestRenderAll();
+    }
+  };
+
   const clearAll = useCallback(() => {
     if (!editor) return;
     editor.canvas.clear();
@@ -117,6 +133,11 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     redoStack.current = [];
     setObjects([]);
     setActiveObject(null);
+  }, [editor]);
+
+  const exportAsSVG = useCallback((): string | null => {
+    if (!editor) return null;
+    return editor.canvas.toSVG();
   }, [editor]);
 
   useEffect(() => {
@@ -227,6 +248,9 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     objects,
     activeObject,
     setActiveObject,
+    deleteSelected,
+    redoStack,
+    exportAsSVG,
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

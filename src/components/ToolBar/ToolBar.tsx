@@ -6,7 +6,24 @@ import { useTool } from '../../context/ToolProvider';
 const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addText, activeObject } = useTool();
+    const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG } = useTool();
+
+    const noObjectsInCanvas = objects && objects.length === 0;
+
+    const downloadHandler = () => {
+        const svg = exportAsSVG();
+        if (!svg) return;
+
+        const blob = new Blob([svg], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "canvas-export.svg";
+        link.click();
+
+        URL.revokeObjectURL(url);
+    };
 
     return <section className={styles.component}>
         <ul>
@@ -42,7 +59,7 @@ const ToolBar = () => {
             </li>
             <li>
                 <label htmlFor="undo" title="Undo">
-                    <IconButton id="undo" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconButton id="undo" disabled={noObjectsInCanvas} onClick={undo} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{ width: '70%', height: '70%' }}>
                             <Undo />
                         </Icon>
@@ -52,7 +69,7 @@ const ToolBar = () => {
             </li>
             <li>
                 <label htmlFor="redo" title="Redo">
-                    <IconButton id="redo" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconButton id="redo" onClick={redo} disabled={redoStack.current && redoStack.current.length === 0} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{ width: '70%', height: '70%' }}>
                             <Redo />
                         </Icon>
@@ -62,7 +79,7 @@ const ToolBar = () => {
             </li>
             <li>
                 <label htmlFor="delete" title="Delete">
-                    <IconButton disabled={!activeObject} id="delete" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconButton disabled={!activeObject} onClick={deleteSelected} id="delete" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{ width: '70%', height: '70%' }}>
                             <Delete />
                         </Icon>
@@ -72,7 +89,7 @@ const ToolBar = () => {
             </li>
             <li>
                 <label htmlFor="clear-all">
-                    <IconButton id="clear-all" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Clear All">
+                    <IconButton id="clear-all" onClick={clearAll} disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Clear All">
                         <Icon style={{ width: '80%', height: '80%' }}>
                             <ClearAll />
                         </Icon>
@@ -94,7 +111,7 @@ const ToolBar = () => {
             </li> */}
             <li>
                 <label htmlFor="get-svg-code">
-                    <IconButton id="get-svg-code" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
+                    <IconButton onClick={downloadHandler} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
                         <Icon style={{ width: '80%', height: '80%' }}>
                             <GetSVG />
                         </Icon>
