@@ -148,7 +148,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     if (!canvas.__eventListeners["mouse:down"]) {
-      canvas.on("mouse:down", function (opt: any) {
+      canvas.on("mouse:down", function (this: typeof canvas, opt: any) {
         const evt = opt.e;
         if (evt.ctrlKey === true) {
           this.isDragging = true;
@@ -160,7 +160,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     if (!canvas.__eventListeners["mouse:move"]) {
-      canvas.on("mouse:move", function (opt: any) {
+      canvas.on("mouse:move", function (this: typeof canvas, opt: any) {
         if (this.isDragging) {
           const e = opt.e;
           const vpt = this.viewportTransform;
@@ -174,7 +174,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     if (!canvas.__eventListeners["mouse:up"]) {
-      canvas.on("mouse:up", function () {
+      canvas.on("mouse:up", function (this: typeof canvas) {
         this.setViewportTransform(this.viewportTransform);
         this.isDragging = false;
         this.selection = true;
