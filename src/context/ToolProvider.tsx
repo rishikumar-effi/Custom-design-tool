@@ -26,11 +26,11 @@ type ToolContextType = {
   color: string;
   setColor: (color: string) => void;
   objects: fabric.Object[];
-  activeObject: fabric.Object | null;
-  setActiveObject: (obj: fabric.Object | null) => void;
+  activeObject: any;
   deleteSelected: () => void;
   redoStack: any;
   exportAsSVG: () => string | null;
+  highlightObject: (obj: any) => void;
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -41,7 +41,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [color, setColor] = useState<string>("#e0e0e0");
   const [cropImage] = useState<boolean>(true);
   const [objects, setObjects] = useState<fabric.Object[]>([]);
-  const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
+  const [activeObject, setActiveObject] = useState(null);
 
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
@@ -60,6 +60,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       stroke: "rgb(30,32,34)",
       strokeWidth: 1,
     });
+    circle.set({id: crypto.randomUUID()});
     editor.canvas.add(circle);
     editor.canvas.setActiveObject(circle);
     redoStack.current = [];
@@ -76,6 +77,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       stroke: "rgb(30,32,34)",
       strokeWidth: 1,
     });
+    rect.set({id: crypto.randomUUID()});
     editor.canvas.add(rect);
     editor.canvas.setActiveObject(rect);
     redoStack.current = [];
@@ -88,6 +90,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       top: 100,
       fill: color,
     });
+    text.set({id: crypto.randomUUID()});
     editor.canvas.add(text);
     editor.canvas.setActiveObject(text);
     redoStack.current = [];
@@ -139,6 +142,20 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     if (!editor) return null;
     return editor.canvas.toSVG();
   }, [editor]);
+
+  const highlightObject = (obj: any) => {
+    if (!editor) return;
+    const canvas = editor.canvas;
+
+    if (obj) {
+      canvas.setActiveObject(obj);
+    } else {
+      canvas.discardActiveObject();
+    }
+
+    canvas.requestRenderAll(); // make sure UI reflects changes
+    setActiveObject(obj);
+  }
 
   useEffect(() => {
     if (!editor || !window.fabric) return;
@@ -247,10 +264,10 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     setColor,
     objects,
     activeObject,
-    setActiveObject,
     deleteSelected,
     redoStack,
     exportAsSVG,
+    highlightObject
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

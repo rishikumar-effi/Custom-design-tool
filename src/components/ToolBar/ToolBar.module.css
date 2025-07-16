@@ -10,7 +10,7 @@
         }
     }
 
-    ul {
+    &>ul {
         display: flex;
         flex-direction: column;
         gap: 1em;
@@ -62,26 +62,26 @@
             }
 
             &:hover label:has(button:not(:disabled)),
-            &.clicked label{
+            &.clicked label {
                 opacity: 1;
                 box-shadow: unset;
                 /* background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45)); */
             }
 
-            &.clicked label button{
+            &.clicked label button {
                 opacity: 1;
             }
 
-            &.clicked{
+            &.clicked {
                 position: relative;
                 border-style: solid;
             }
 
-            &:active:has(button:not(:disabled)){
+            &:active:has(button:not(:disabled)) {
                 border-style: solid;
             }
 
-            &.clicked::before{
+            &.clicked::before {
                 content: '';
                 --size: .5em;
                 width: var(--size);
@@ -102,7 +102,7 @@
                 flex-direction: row;
             }
 
-            & li.clicked::before{
+            & li.clicked::before {
                 content: unset;
             }
 
@@ -123,10 +123,10 @@
         }
 
         @media (max-width: 500px) {
-            &{
+            & {
                 gap: .5em;
             }
-            
+
             & li label {
                 button {
                     width: 2em !important;
@@ -134,5 +134,57 @@
                 }
             }
         }
+    }
+
+    .object-lists {
+        margin: .5em 0;
+
+        fieldset {
+            height: 10em;
+            overflow-y: scroll;
+            border-radius: .5em;
+            border: 1px dashed #626262;
+            font-weight: 100;
+            padding: 1em;
+
+            legend {
+                color: #e0e0e0;
+                font-size: 1.3em;
+                padding: 0 .5em;
+            }
+
+            ul {
+                height: 100%;
+
+                display: flex;
+                flex-direction: column;
+                gap: .5em;
+
+                li {
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: .5em;
+                    color: #e0e0e0;
+                    background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45));
+                    opacity: .6;
+                    transition: .3s;
+                    border-radius: .25em;
+                    padding: .5em .8em;
+
+                    span {
+                        text-transform: capitalize;
+                        font-size: 1em;
+                        letter-spacing: .5px;
+                    }
+
+                    &[data-focused="true"],
+                    &:hover{
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+
     }
 }
