@@ -26,3 +26,11 @@
         position: relative;
     }
 }
+
+.canvas-wrapper{
+    & div,
+    & canvas{
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
