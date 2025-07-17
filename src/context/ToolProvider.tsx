@@ -46,20 +46,33 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
 
+  const objectProps = (obj: fabric.Object) => {
+    if (!editor) return;
+    const canvas = editor.canvas;
+    const center = canvas.getCenter();
+    obj.set({ id: crypto.randomUUID() });
+    
+    obj.set({
+      left: center.left - obj.getScaledWidth() / 2,
+      top: center.top - obj.getScaledHeight() / 2,
+      originX: 'left',
+      originY: 'top'
+    });
+    obj.setCoords();
+    editor.canvas.add(obj);
+    editor.canvas.setActiveObject(obj);
+    redoStack.current = [];
+  };
+
   const addCircle = useCallback(() => {
     if (!editor || !window.fabric) return;
     const circle = new window.fabric.Circle({
       radius: 30,
       fill: color,
-      left: 100,
-      top: 100,
       stroke: "#1e2022",
       strokeWidth: 1,
     });
-    circle.set({id: crypto.randomUUID()});
-    editor.canvas.add(circle);
-    editor.canvas.setActiveObject(circle);
-    redoStack.current = [];
+    objectProps(circle);
   }, [editor, color]);
 
   const addRectangle = useCallback(() => {
@@ -73,10 +86,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       stroke: "#1e2022",
       strokeWidth: 1,
     });
-    rect.set({id: crypto.randomUUID()});
-    editor.canvas.add(rect);
-    editor.canvas.setActiveObject(rect);
-    redoStack.current = [];
+    objectProps(rect);
   }, [editor, color]);
 
   const addText = useCallback(() => {
@@ -86,10 +96,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       top: 100,
       fill: color,
     });
-    text.set({id: crypto.randomUUID()});
-    editor.canvas.add(text);
-    editor.canvas.setActiveObject(text);
-    redoStack.current = [];
+    objectProps(text);
   }, [editor, color]);
 
   const undo = useCallback(() => {
