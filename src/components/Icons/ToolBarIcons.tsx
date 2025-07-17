@@ -4,7 +4,7 @@ const DrawRectangle = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%"
 
 const AddText = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M10.318 16.978h1.648m0 0h1.664m-1.664 0v-9.48m-4.961 1.72c-.138-1.057.138-1.524 1.11-1.786c2.49-.67 5.193-.557 7.697.06c.943.234 1.265.649 1.13 1.726"/><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10"/></g></svg>
 
-const Text = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3 5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V6h-6v13h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2V6H5v1a1 1 0 0 1-2 0V5Z" clip-rule="evenodd"/></svg>
+const Text = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M3 5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V6h-6v13h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2V6H5v1a1 1 0 0 1-2 0V5Z" clipRule="evenodd"/></svg>
 
 const Undo = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M4.5 8H15q0 0 0 0s5 0 5 4.706C20 18 15 18 15 18H6.286"/><path d="M7.5 11.5L4 8l3.5-3.5"/></g></svg>
 
