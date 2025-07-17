@@ -94,4 +94,29 @@
 
         }
     }
+
+    @media (max-width: 1000px) {
+        &{
+            width: 100%;
+            max-width: unset;
+            flex: unset;
+            flex-direction: row;
+
+            & ul{
+                flex-direction: row;
+            }
+            
+            li {
+                width: fit-content;
+    
+                label {
+                    padding: .5em !important;
+                }
+    
+                & span {
+                    display: none;
+                }
+            }
+        }
+    }
 }

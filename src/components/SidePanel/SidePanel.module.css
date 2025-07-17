@@ -2,7 +2,17 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    gap: 1em;
+    width: 100%;
     max-width: 25em;
+    min-width: 25em;
+
+    @media (max-width: 1000px){
+        &{
+            flex-direction: row;
+            max-width: unset;
+        }
+    }
 
     .placeholder-text{
         color: #e0e0e0;
@@ -98,7 +108,6 @@
             }
         }
     }
-
 
     .object-lists {
         margin: .5em 0;

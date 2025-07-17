@@ -1,5 +1,11 @@
 .component{
     flex: 2;
+    width: 48em;
+    min-width: 48em;
+    max-width: 48em;
+    height: 48em;
+    min-height: 48em;
+
     border: 1px dashed #626262;
     --bg: #3a3a3a;
     position: relative;
