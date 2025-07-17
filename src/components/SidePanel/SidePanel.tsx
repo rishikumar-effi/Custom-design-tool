@@ -108,8 +108,6 @@ const SidePanel = () => {
         }
     }
 
-    console.log(activeObject?.strokeWidth);
-
     useEffect(() => {
         if (!activeObject || !activeObject.canvas) return;
 
@@ -179,7 +177,7 @@ const SidePanel = () => {
                     {isText &&
                         <>
                         <div className={styles.configurable}>
-                                <label htmlFor="set-color">Font Size</label>
+                                <label htmlFor="set-color">Font Color</label>
                                 <input type="color" id="set-color" name="font-color" onChange={colorHandler} value={color} />
                             </div>
                             <div className={styles.configurable}>
