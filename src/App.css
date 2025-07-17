@@ -23,20 +23,6 @@ body,
     padding: 1.5em;
     background: #1e2022;
     box-shadow: 0px 10px 10px rgba(0,0,0,.15);
-
-    @media (max-width: 600px) {
-      &{
-        grid-template-columns: unset;
-        grid-template-rows: auto 1fr;
-        padding: 1em;
-      }
-    }
-
-    @media (max-width: 500px) {
-      &{
-        gap: 1em;
-      }
-    }
   }
 
 }
