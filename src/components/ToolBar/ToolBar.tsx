@@ -2,11 +2,19 @@ import IconButton from '../IconButton';
 import styles from './ToolBar.module.css';
 import { ToolBarIcons, Icon } from '../Icons';
 import { useTool } from '../../context/ToolProvider';
+import useDialog from '../../hooks/useDialog';
+import {TemplateDialog} from '../Dialog';
 
-const { DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
+const { DrawFrame, DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
 
 const ToolBar = () => {
     const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG } = useTool();
+
+    const {Dialog, openDialog} = useDialog();
+
+    const addTemplateHandler = () => {
+        openDialog();
+    }
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
@@ -25,10 +33,19 @@ const ToolBar = () => {
         URL.revokeObjectURL(url);
     };
 
-    // console.log(objects.map((obj: any) => console.log(obj.type)));
-
     return <section className={styles.component}>
+        <Dialog><TemplateDialog/></Dialog>
         <ul>
+            <li>
+                <label htmlFor="draw-frame" title="Draw Frame">
+                    <IconButton onClick={addTemplateHandler} id="draw-frame" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon style={{ width: '80%', height: '80%' }}>
+                            <DrawFrame />
+                        </Icon>
+                    </IconButton>
+                    <span>Add Frame</span>
+                </label>
+            </li>
             <li>
                 <label htmlFor="draw-circle" title="Draw Circle">
                     <IconButton onClick={addCircle} id="draw-circle" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -39,20 +39,19 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const { editor, onReady } = useFabricJSEditor();
 
   const [color, setColor] = useState<string>("#e0e0e0");
-  const [cropImage] = useState<boolean>(true);
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState(null);
 
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
 
-  const objectProps = (obj: fabric.Object) => {
+  const objectProps = useCallback((obj: fabric.Object) => {
     if (!editor) return;
     const canvas = editor.canvas;
     const center = canvas.getCenter();
-    obj.set({ id: crypto.randomUUID() });
-    
+
     obj.set({
+      id: crypto.randomUUID(),
       left: center.left - obj.getScaledWidth() / 2,
       top: center.top - obj.getScaledHeight() / 2,
       originX: 'left',
@@ -62,7 +61,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     editor.canvas.add(obj);
     editor.canvas.setActiveObject(obj);
     redoStack.current = [];
-  };
+  }, [editor]);
 
   const addCircle = useCallback(() => {
     if (!editor || !window.fabric) return;
@@ -146,7 +145,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     return editor.canvas.toSVG();
   }, [editor]);
 
-  const highlightObject = (obj: any) => {
+  const highlightObject = useCallback((obj: any) => {
     if (!editor) return;
     const canvas = editor.canvas;
 
@@ -156,76 +155,10 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       canvas.discardActiveObject();
     }
 
-    canvas.requestRenderAll(); // make sure UI reflects changes
+    canvas.requestRenderAll();
     setActiveObject(obj);
-  }
+  }, [editor]);
 
-  useEffect(() => {
-    if (!editor || !window.fabric) return;
-    editor.canvas.freeDrawingBrush.color = color;
-    editor.setStrokeColor(color);
-  }, [editor, color]);
-
-  // Setup zoom and pan
-  useEffect(() => {
-    if (!editor || !window.fabric) return;
-    const canvas = editor.canvas as any;
-
-    if (cropImage) {
-      canvas.__eventListeners = {};
-      return;
-    }
-
-    if (!canvas.__eventListeners["mouse:wheel"]) {
-      canvas.on("mouse:wheel", (opt: any) => {
-        const delta = opt.e.deltaY;
-        let zoom = canvas.getZoom();
-        zoom *= 0.999 ** delta;
-        zoom = Math.min(20, Math.max(0.01, zoom));
-        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-        opt.e.preventDefault();
-        opt.e.stopPropagation();
-      });
-    }
-
-    if (!canvas.__eventListeners["mouse:down"]) {
-      canvas.on("mouse:down", function (this: typeof canvas, opt: any) {
-        const evt = opt.e;
-        if (evt.ctrlKey === true) {
-          this.isDragging = true;
-          this.selection = false;
-          this.lastPosX = evt.clientX;
-          this.lastPosY = evt.clientY;
-        }
-      });
-    }
-
-    if (!canvas.__eventListeners["mouse:move"]) {
-      canvas.on("mouse:move", function (this: typeof canvas, opt: any) {
-        if (this.isDragging) {
-          const e = opt.e;
-          const vpt = this.viewportTransform;
-          vpt[4] += e.clientX - this.lastPosX;
-          vpt[5] += e.clientY - this.lastPosY;
-          this.requestRenderAll();
-          this.lastPosX = e.clientX;
-          this.lastPosY = e.clientY;
-        }
-      });
-    }
-
-    if (!canvas.__eventListeners["mouse:up"]) {
-      canvas.on("mouse:up", function (this: typeof canvas) {
-        this.setViewportTransform(this.viewportTransform);
-        this.isDragging = false;
-        this.selection = true;
-      });
-    }
-
-    canvas.renderAll();
-  }, [editor, cropImage]);
-
-  // Sync `objects` and `activeObject` from canvas
   useEffect(() => {
     if (!editor) return;
     const canvas = editor.canvas;

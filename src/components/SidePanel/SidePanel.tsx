@@ -38,6 +38,8 @@ const SidePanel = () => {
 
     const isText = activeObject && activeObject.type === 'i-text';
 
+    const isCircle = activeObject && activeObject.type === 'circle';
+
     const [text, setText] = useState<string>(activeObject ? activeObject.text : 'Insert Text');
 
     const [fontSize, setFontSize] = useState<number>(activeObject ? activeObject.fontSize : 0);
@@ -45,6 +47,8 @@ const SidePanel = () => {
     const [color, setColor] = useState<string>(activeObject ? activeObject.fill : '#e0e0e0');
 
     const [strokeWidth, setStrokeWidth] = useState<number>(activeObject ? activeObject.strokeWidth : 1);
+
+    const [radius, setRadius] = useState<number>(activeObject ? activeObject.radius : 0);
 
     const widthHandler = (e: any) => {
         const newWidth = Number(e.target.value);
@@ -60,6 +64,15 @@ const SidePanel = () => {
         setHeight(newHeight);
         if (activeObject) {
             activeObject.set({ height: newHeight });
+            activeObject.canvas?.requestRenderAll();
+        }
+    }
+
+    const radiusHandler = (e: any) => {
+        const newRadius = Number(e.target.value);
+        setRadius(newRadius);
+        if (activeObject && isCircle) {
+            activeObject.set({ radius: newRadius });
             activeObject.canvas?.requestRenderAll();
         }
     }
@@ -97,13 +110,13 @@ const SidePanel = () => {
         }
     }
 
-    const strokeWidthHandler = (e: any) =>{
+    const strokeWidthHandler = (e: any) => {
         const value = +e.target.value;
 
         setStrokeWidth(value);
 
-        if(activeObject){
-            activeObject.set({strokeWidth: value});
+        if (activeObject) {
+            activeObject.set({ strokeWidth: value });
             activeObject.canvas?.requestRenderAll();
         }
     }
@@ -121,6 +134,7 @@ const SidePanel = () => {
             setHeight(actualHeight);
             setColor(activeObject.fill || "#e0e0e0");
             setStrokeWidth(activeObject.strokeWidth || '#1e2022');
+            setRadius(activeObject.radius || 0);
 
             if (isText) {
                 setText(activeObject.text || '');
@@ -155,6 +169,12 @@ const SidePanel = () => {
             <fieldset>
                 <legend>Configure</legend>
                 {activeObject ? <section>
+                    {isCircle &&
+                        <div className={styles.configurable}>
+                            <label htmlFor="set-radius">Radius</label>
+                            <input onChange={radiusHandler} type="number" min={0} id="set-radius" name="radius" value={radius} />
+                        </div>
+                    }
                     <div className={styles.configurable}>
                         <label htmlFor="set-width">Width</label>
                         <input onChange={widthHandler} type="number" min={0} id="set-width" name="width" value={width} />
@@ -171,12 +191,12 @@ const SidePanel = () => {
                         </div>
                         <div className={styles.configurable}>
                             <label htmlFor="set-fill">Fill</label>
-                            <input type="color" name="fill" id="set-fill" value={color} onChange={colorHandler}/>
+                            <input type="color" name="fill" id="set-fill" value={color} onChange={colorHandler} />
                         </div>
                     </>}
                     {isText &&
                         <>
-                        <div className={styles.configurable}>
+                            <div className={styles.configurable}>
                                 <label htmlFor="set-color">Font Color</label>
                                 <input type="color" id="set-color" name="font-color" onChange={colorHandler} value={color} />
                             </div>

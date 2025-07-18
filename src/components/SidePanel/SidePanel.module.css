@@ -14,6 +14,10 @@
         }
     }
 
+    legend{
+        font-size: 1.4em;
+    }
+
     .placeholder-text{
         color: #e0e0e0;
         font-size: 1.2em;
@@ -34,7 +38,6 @@
             legend {
                 letter-spacing: .5px;
                 color: #e0e0e0;
-                font-size: 1.4em;
                 padding: 0 .5em;
             }
 
@@ -90,8 +93,10 @@
             }
 
             input{
-                border-radius: .5em;
+                border-radius: .25em;
                 max-width: 10em;
+                background: #e0e0e0;
+                box-shadow: inset 0px 0px 5px rgba(0,0,0,.5);
             }
 
             input[type='number'],
@@ -126,7 +131,6 @@
             legend {
                 letter-spacing: .5px;
                 color: #e0e0e0;
-                font-size: 1.3em;
                 padding: 0 .5em;
             }
 
@@ -141,6 +145,7 @@
                     cursor: pointer;
                     display: flex;
                     align-items: center;
+                    user-select: none;
                     gap: .5em;
                     color: #e0e0e0;
                     /* background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45)); */
