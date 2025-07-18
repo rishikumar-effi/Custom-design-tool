@@ -118,16 +118,6 @@ const ToolBar = () => {
             </li>
         </ul>
         <ul>
-            {/* <li>
-                <label htmlFor="export-svg">
-                    <IconButton id="export-svg" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
-                        <Icon style={{width: '90%', height: '90%'}}>
-                            <Export />
-                        </Icon>
-                    </IconButton>
-                    <span>Export as SVG</span>
-                </label>
-            </li> */}
             <li>
                 <label htmlFor="get-svg-code">
                     <IconButton onClick={downloadHandler} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">

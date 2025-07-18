@@ -118,7 +118,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [editor]);
 
-  const deleteSelected = () => {
+  const deleteSelected = useCallback(() => {
     if (!editor) return;
     const canvas = editor.canvas;
 
@@ -129,7 +129,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       canvas.discardActiveObject();
       canvas.requestRenderAll();
     }
-  };
+  }, [editor]);
 
   const clearAll = useCallback(() => {
     if (!editor) return;
