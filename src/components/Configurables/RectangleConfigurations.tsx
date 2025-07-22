@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import styles from './Configurables.module.css';
+import useObjectSync from "../../hooks/useObjectSync";
 
 const RectangleConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
     const [width, setWidth] = useState<number>(0);
@@ -11,14 +12,14 @@ const RectangleConfigurations = ({ object, handleChange }: { object: any, handle
         const newWidth = Number(e.target.value);
         setWidth(newWidth);
 
-        handleChange({width:newWidth, scaleX : 1});
+        handleChange({ width: newWidth, scaleX: 1 });
     }, [handleChange]);
 
     const heightHandler = useCallback((e: any) => {
         const newHeight = Number(e.target.value);
         setHeight(newHeight);
 
-        handleChange({height:newHeight, scaleY: 1});
+        handleChange({ height: newHeight, scaleY: 1 });
     }, [handleChange]);
 
     const fillHandler = useCallback((e: any) => {
@@ -35,27 +36,17 @@ const RectangleConfigurations = ({ object, handleChange }: { object: any, handle
         handleChange('strokeWidth', newStrokeWidth);
     }, [handleChange]);
 
-    useEffect(() => {
-        if (!object || !object.canvas) return;
+    const objectHandler = useCallback(() => {
+        const actualWidth = Math.round((object.width || 0) * (object.scaleX || 1));
+        const actualHeight = Math.round((object.height || 0) * (object.scaleY || 1));
 
-        const canvas = object.canvas;
-
-        const updateStateFromObject = () => {
-            const actualWidth = Math.round((object.width || 0) * (object.scaleX || 1));
-            const actualHeight = Math.round((object.height || 0) * (object.scaleY || 1));
-
-            setWidth(actualWidth);
-            setHeight(actualHeight);
-            setFill(object.fill || '#e0e0e0');
-            setStrokeWidth(object.strokeWidth || 1);
-        };
-
-        updateStateFromObject();
-
-        canvas.on('object:modified', updateStateFromObject);
-
-        return () => canvas.off('object:modified', updateStateFromObject);
+        setWidth(actualWidth);
+        setHeight(actualHeight);
+        setFill(object.fill || '#e0e0e0');
+        setStrokeWidth(object.strokeWidth || 1);
     }, [object]);
+
+    useObjectSync(object, objectHandler);
 
     return <>
         <div className={styles.configurable}>

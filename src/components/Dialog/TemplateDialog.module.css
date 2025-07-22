@@ -22,7 +22,7 @@
             background: #3f3f3f;
             opacity: .8;
             cursor: pointer;
-            transition: .3s;
+            /* transition: .3s; */
 
             &:hover{
                 opacity: 1;

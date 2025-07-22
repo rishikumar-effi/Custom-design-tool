@@ -12,9 +12,7 @@ const ToolBar = () => {
 
     const {Dialog, openDialog} = useDialog();
 
-    const addTemplateHandler = () => {
-        openDialog();
-    }
+    const addTemplateHandler = () => openDialog();
 
     const noObjectsInCanvas = objects && objects.length === 0;
 

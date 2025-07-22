@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import styles from './Configurables.module.css';
+import useObjectSync from "../../hooks/useObjectSync";
 
-const TextConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string, value: number | string) => void }) => {
+const TextConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
     const [width, setWidth] = useState<number>(0);
     const [height, setHeight] = useState<number>(0);
     const [color, setColor] = useState<string>(object ? object.fill : '#e0e0e0');
@@ -11,22 +12,22 @@ const TextConfigurations = ({ object, handleChange }: { object: any, handleChang
         const newWidth = Number(e.target.value);
         setWidth(newWidth);
 
-        handleChange('width', newWidth);
-    }, [width]);
+        handleChange({ width: newWidth, scaleX: 1 });
+    }, [handleChange]);
 
     const heightHandler = useCallback((e: any) => {
         const newHeight = Number(e.target.value);
         setHeight(newHeight);
 
-        handleChange('height', newHeight);
-    }, [height]);
+        handleChange({ height: newHeight, scaleY: 1 });
+    }, [handleChange]);
 
     const colorHandler = useCallback((e: any) => {
         const newColor = e.target.value;
         setColor(newColor);
 
         handleChange('fill', newColor);
-    }, [color]);
+    }, [handleChange]);
 
     const textHandler = useCallback((e: any) => {
         const newText = e.target.value;
@@ -34,14 +35,19 @@ const TextConfigurations = ({ object, handleChange }: { object: any, handleChang
         setText(newText);
 
         handleChange('text', newText);
-    }, [text]);
+    }, [handleChange]);
 
-    useEffect(() => {
-        setWidth(object.width);
-        setHeight(object.height);
+    const objectHandler = useCallback(() => {
+        const actualWidth = Math.round((object.width || 0) * (object.scaleX || 1));
+        const actualHeight = Math.round((object.height || 0) * (object.scaleY || 1));
+
+        setWidth(actualWidth);
+        setHeight(actualHeight);
         setColor(object.fill || '#e0e0e0');
-        setText(object.text);
-    }, [object]);
+        setText(object.text || 'Insert Text');
+    }, []);
+
+    useObjectSync(object, objectHandler);
 
     return <>
         <div className={styles.configurable}>

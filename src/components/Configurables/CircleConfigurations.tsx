@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import styles from './Configurables.module.css';
+import useObjectSync from "../../hooks/useObjectSync";
 
 const CircleConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
     const [radius, setRadius] = useState<number>(object ? object.radius : 0);
@@ -10,7 +11,7 @@ const CircleConfigurations = ({ object, handleChange }: { object: any, handleCha
         const newRadius = Number(e.target.value);
         setRadius(newRadius);
 
-        handleChange({radius: newRadius, scaleX: 1, scaleY : 1});
+        handleChange({ radius: newRadius, scaleX: 1, scaleY: 1 });
     }, [handleChange]);
 
     const fillHandler = useCallback((e: any) => {
@@ -25,29 +26,19 @@ const CircleConfigurations = ({ object, handleChange }: { object: any, handleCha
         setStrokeWidth(newStrokeWidth);
 
         handleChange('strokeWidth', newStrokeWidth);
-    }, [handleChange])
+    }, [handleChange]);
 
-    useEffect(() => {
-        if (!object || !object.canvas) return;
+    const objectHandler = useCallback(() => {
+        const scaledRadius = Math.round((object.radius || 0) * (object.scaleX || 1));
+        const stroke = object.strokeWidth || 1;
+        const fill = object.fill || "#e0e0e0";
 
-        const canvas = object.canvas;
-
-        const updateStateFromObject = () => {
-            const scaledRadius = Math.round((object.radius || 0) * (object.scaleX || 1));
-            const stroke = object.strokeWidth || 1;
-            const fill = object.fill || "#e0e0e0";
-
-            setRadius(scaledRadius);
-            setFill(fill);
-            setStrokeWidth(stroke);
-        };
-
-        updateStateFromObject();
-
-        canvas.on('object:modified', updateStateFromObject);
-
-        return () => canvas.off('object:modified', updateStateFromObject);
+        setRadius(scaledRadius);
+        setFill(fill);
+        setStrokeWidth(stroke);
     }, [object]);
+
+    useObjectSync(object, objectHandler);
 
     return <>
         <div className={styles.configurable}>
