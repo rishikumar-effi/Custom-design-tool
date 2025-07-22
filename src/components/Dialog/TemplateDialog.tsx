@@ -10,7 +10,7 @@ export const TemplateDialog = () => {
         {
             templates.length > 0 && <div className={styles.frames}>
                 {
-                    templates.map((template, index) => <div key={index} onClick={() => setSelectedFrameIndex(index)} className={styles.frame} data-selected={selectedFrameIndex === index}>{template}</div>)
+                    templates.map((template, index) => <div key={index} dangerouslySetInnerHTML={{ __html: template }} onClick={() => setSelectedFrameIndex(index)} className={styles.frame} data-selected={selectedFrameIndex === index}/>)
                 }
             </div>
         }
