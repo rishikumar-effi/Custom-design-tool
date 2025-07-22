@@ -16,12 +16,12 @@ const labelElement = (label: string) => {
             element = DrawRectangle;
             elementName = "Rectangle";
             break;
-        case 'i-text':
+        case 'textbox':
             element = Text;
             elementName = "Text";
             break;
         default:
-            elementName = "Svg Element";
+            elementName = label;
             break;
     }
 

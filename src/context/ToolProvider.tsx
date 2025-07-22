@@ -90,7 +90,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addText = useCallback(() => {
     if (!editor || !window.fabric) return;
-    const text = new window.fabric.IText("Insert text", {
+    const text = new window.fabric.Textbox("Insert text", {
       left: 100,
       top: 100,
       fill: color,

@@ -26,7 +26,7 @@ const Configurables = ({ activeObject }: { activeObject: any }) => {
                 return <CircleConfigurations object={activeObject} handleChange={handleChange} />;
             case 'rect':
                 return <RectangleConfigurations object={activeObject} handleChange={handleChange} />;
-            case 'i-text':
+            case 'textbox':
                 return <TextConfigurations object={activeObject} handleChange={handleChange} />;
             default:
                 return <p>No configurator available</p>

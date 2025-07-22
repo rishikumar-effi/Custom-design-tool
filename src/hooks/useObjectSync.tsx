@@ -14,9 +14,19 @@ const useObjectSync = (object: any, objectHandler: () => void) => {
             }
         };
 
-        canvas.on('object:modified', handleModified);
+        const handleTextChanged = (e: any) => {
+            if (e.target === object) {
+                objectHandler();
+            }
+        };
 
-        return () => canvas.off('object:modified', handleModified);
+        canvas.on('object:modified', handleModified);
+        canvas.on('text:changed', handleTextChanged);
+
+        return () => {
+            canvas.off('object:modified', handleModified);
+            canvas.off('text:changed', handleTextChanged);
+        };
     }, [object, objectHandler]);
 }
 

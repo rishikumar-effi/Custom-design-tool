@@ -60,13 +60,32 @@
         gap: 1em;
     }
 
+    .configurable-wrapper{
+        display: flex;
+
+        & > label:not(.configurable-icon){
+            min-width: 6em;
+            letter-spacing: .5px;
+            font-size: 1.2em;
+            color: #e0e0e0;
+        }
+
+        .configurable-icon{
+            --size: 2em;
+
+            width: var(--size) !important;
+            height: var(--size) !important;
+            min-width: unset !important;
+        }
+    }
+
     .configurable {
         display: flex;
         align-items: center;
         gap: .5em;
         color: #e0e0e0;
 
-        label {
+        label:not(.configurable-icon) {
             min-width: 6em;
             letter-spacing: .5px;
             font-size: 1.2em;
@@ -90,6 +109,12 @@
 
         input[type="text"] {
             min-width: 8em;
+        }
+
+        input[type="radio"]{
+            width: 0;
+            height: 0;
+            visibility: none;
         }
     }
 }

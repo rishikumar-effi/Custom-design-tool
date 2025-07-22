@@ -1,4 +1,5 @@
 export * from './ToolBarIcons';
+export * from './ConfigurableIcons';
 
 type IconType = React.HTMLAttributes<HTMLDivElement> & {
     children: React.ReactNode;
