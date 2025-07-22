@@ -7,7 +7,7 @@ import {
   useRef,
 } from "react";
 import { useFabricJSEditor } from "fabricjs-react";
-import fabric from "fabric";
+import * as fabric from "fabric";
 
 declare global {
   interface Window {

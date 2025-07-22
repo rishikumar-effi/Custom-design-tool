@@ -3,36 +3,36 @@ import styles from './ToolBar.module.css';
 import { ToolBarIcons, Icon } from '../Icons';
 import { useTool } from '../../context/ToolProvider';
 import useDialog from '../../hooks/useDialog';
-import {TemplateDialog} from '../Dialog';
+import { TemplateDialog } from '../Dialog';
+import { useCallback } from 'react';
 
 const { DrawFrame, DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
+
+const downloadHandler = (svg: any) => {
+    if (!svg) return;
+
+    const blob = new Blob([svg], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "canvas-export.svg";
+    link.click();
+
+    URL.revokeObjectURL(url);
+};
 
 const ToolBar = () => {
     const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG } = useTool();
 
-    const {Dialog, openDialog} = useDialog();
+    const { Dialog, openDialog } = useDialog();
 
-    const addTemplateHandler = () => openDialog();
+    const addTemplateHandler = useCallback(() => openDialog(), []);
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
-    const downloadHandler = () => {
-        const svg = exportAsSVG();
-        if (!svg) return;
-
-        const blob = new Blob([svg], { type: "image/svg+xml" });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "canvas-export.svg";
-        link.click();
-
-        URL.revokeObjectURL(url);
-    };
-
     return <section className={styles.component}>
-        <Dialog><TemplateDialog/></Dialog>
+        <Dialog><TemplateDialog /></Dialog>
         <ul>
             <li>
                 <label htmlFor="draw-frame" title="Draw Frame">
@@ -118,7 +118,7 @@ const ToolBar = () => {
         <ul>
             <li>
                 <label htmlFor="get-svg-code">
-                    <IconButton onClick={downloadHandler} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
+                    <IconButton onClick={() => downloadHandler(exportAsSVG())} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
                         <Icon style={{ width: '80%', height: '80%' }}>
                             <GetSVG />
                         </Icon>
