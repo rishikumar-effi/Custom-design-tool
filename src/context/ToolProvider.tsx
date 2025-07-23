@@ -67,8 +67,10 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     loadedObj.set({
       id: crypto.randomUUID(),
-      left: canvas.getCenter().left - loadedObj.getScaledWidth() / 2,
-      top: canvas.getCenter().top - loadedObj.getScaledHeight() / 2,
+      left: canvas.getCenter().left - loadedObj.getScaledWidth() / 4,
+      top: canvas.getCenter().top - loadedObj.getScaledHeight() / 4,
+      scaleX: .5,
+      scaleY: .5,
       originX: 'left',
       originY: 'top',
     });
