@@ -23,16 +23,16 @@ const downloadHandler = (svg: any) => {
 };
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG } = useTool();
+    const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG, importSVG } = useTool();
 
-    const { Dialog, openDialog } = useDialog();
+    const { Dialog, openDialog, closeDialog } = useDialog();
 
     const addTemplateHandler = useCallback(() => openDialog(), []);
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
     return <section className={styles.component}>
-        <Dialog><TemplateDialog /></Dialog>
+        <Dialog><TemplateDialog importSVG={importSVG} closeDialog={closeDialog}/></Dialog>
         <ul>
             <li>
                 <label htmlFor="draw-frame" title="Draw Frame">

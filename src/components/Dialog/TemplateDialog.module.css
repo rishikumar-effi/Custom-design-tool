@@ -6,11 +6,15 @@
     border: 1px dotted #686868;
     border-radius: inherit;
 
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+
     .frames{
         display: flex;
         flex-wrap: wrap;
         gap: 1.5em;
-        margin-top: 1.5em;
+        /* margin-top: 1.5em; */
         max-height: 60em;
         overflow-y: auto;
         
@@ -38,5 +42,14 @@
                 height: 100%;
             }
         }
+    }
+
+    button{
+        background: linear-gradient(#fff, #e0e0e0);
+        padding: .6em 1.2em;
+        font-size: 1.2em;
+        align-self: flex-end;
+        border-radius: 2em;
+        font-weight: 300;
     }
 }

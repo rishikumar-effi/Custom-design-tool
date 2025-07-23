@@ -31,6 +31,7 @@ type ToolContextType = {
   redoStack: any;
   exportAsSVG: () => string | null;
   highlightObject: (obj: any) => void;
+  importSVG: (svgString: string) => void;
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -44,6 +45,41 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
+
+  const importSVG = useCallback((svgString: string) => {
+  if (!editor) return;
+
+  fabric.loadSVGFromString(svgString).then(({ objects, options }: { objects: any[], options: any }) => {
+    const canvas = editor.canvas;
+
+    if (!objects || objects.length === 0) {
+      console.error("SVG parsed but returned no objects.");
+      return;
+    }
+
+    let loadedObj: fabric.Object;
+
+    if (objects.length === 1) {
+      loadedObj = objects[0];
+    } else {
+      loadedObj = fabric.util.groupSVGElements(objects, options);
+    }
+
+    loadedObj.set({
+      id: crypto.randomUUID(),
+      left: canvas.getCenter().left - loadedObj.getScaledWidth() / 2,
+      top: canvas.getCenter().top - loadedObj.getScaledHeight() / 2,
+      originX: 'left',
+      originY: 'top',
+    });
+
+    canvas.add(loadedObj);
+    canvas.setActiveObject(loadedObj);
+    canvas.requestRenderAll();
+  }).catch((err) => {
+    console.error("Error loading SVG:", err);
+  });
+}, [editor]);
 
   const objectProps = useCallback((obj: fabric.Object) => {
     if (!editor) return;
@@ -203,7 +239,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     deleteSelected,
     redoStack,
     exportAsSVG,
-    highlightObject
+    highlightObject,
+    importSVG
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;
