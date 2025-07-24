@@ -36,25 +36,29 @@
 
             .object {
                 cursor: pointer;
-                /* display: flex;
-                align-items: center;
-                gap: .5em; */
                 user-select: none;
                 color: #e0e0e0;
-                /* background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45)); */
                 opacity: .6;
                 transition: .3s;
                 border-radius: .25em;
-                /* padding: .5em .8em; */
-                /* margin-left: 2em; */
                 position: relative;
 
                 .nested{
                     display: flex;
                     flex-direction: column;
                     gap: .5em;
-                    margin-left: 2em;
+                    margin-left: 1.5em;
                     margin-top: .5em;
+                    position: relative;
+
+                    &::before{
+                        content: '';
+                        width: 1px;
+                        height: calc(100% - 2em);
+                        position: absolute;
+                        background: #4f4f4f;
+                        left: -1em;
+                    }
                 }
 
                 .object-props{

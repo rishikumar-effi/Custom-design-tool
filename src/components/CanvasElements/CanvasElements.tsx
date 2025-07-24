@@ -48,7 +48,7 @@ const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: a
 
                         return <li className={styles.object} key={obj.id} data-focused={activeObject && activeObject.id === obj.id} onClick={() => highlightObject(obj)}>
                             <div className={styles['object-props']}>
-                                <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
+                                <Icon style={{ width: '1.25em', height: '1.25em', color: '#e0e0e0' }}>
                                     {element && React.createElement(element)}
                                 </Icon>
                                 <span>{elementName}</span>
@@ -60,7 +60,7 @@ const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: a
                                             const { element, elementName } = labelElement(nestedObj.type);
                                             return <li key={index} onClick={() => highlightObject(nestedObj)}>
                                                 <div className={styles['object-props']}>
-                                                    <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
+                                                    <Icon style={{ width: '1.25em', height: '1.25em', color: '#e0e0e0' }}>
                                                         {element && React.createElement(element)}
                                                     </Icon>
                                                     <span>{elementName}</span>
