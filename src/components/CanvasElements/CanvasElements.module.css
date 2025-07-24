@@ -30,12 +30,16 @@
             flex-direction: column;
             gap: .5em;
 
-            li {
+            li{
+                display: inline-block;
+            }
+
+            .object {
                 cursor: pointer;
-                display: flex;
+                /* display: flex;
                 align-items: center;
+                gap: .5em; */
                 user-select: none;
-                gap: .5em;
                 color: #e0e0e0;
                 /* background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45)); */
                 opacity: .6;
@@ -44,6 +48,20 @@
                 /* padding: .5em .8em; */
                 /* margin-left: 2em; */
                 position: relative;
+
+                .nested{
+                    display: flex;
+                    flex-direction: column;
+                    gap: .5em;
+                    margin-left: 2em;
+                    margin-top: .5em;
+                }
+
+                .object-props{
+                    display: flex;
+                    align-items: center;
+                    gap: .5em;
+                }
 
                 span {
                     width: 100%;
