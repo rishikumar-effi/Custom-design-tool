@@ -7,7 +7,11 @@ import {
   useRef,
 } from "react";
 import { useFabricJSEditor } from "fabricjs-react";
-import {fabric} from 'fabric';
+import { fabric } from 'fabric';
+
+type customFabricObject = fabric.Object & { id: string };
+
+type customFabricGroup = fabric.Group & { id: string };
 
 type ToolContextType = {
   addCircle: () => void;
@@ -24,7 +28,7 @@ type ToolContextType = {
   deleteSelected: () => void;
   redoStack: any;
   exportAsSVG: () => string | null;
-  highlightObject: (obj: any) => void;
+  highlightObject: (event: any, obj: any) => void;
   importSVG: (svgString: string) => void;
 };
 
@@ -40,24 +44,55 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
 
-  const importSVG = useCallback((svgString: string) => {
+  const importSVG = useCallback(async (svgString: string) => {
     if (!editor) return;
 
-    fabric.loadSVGFromString(svgString,
-      (objects: any,) => {
-        editor.canvas._objects.splice(0, editor.canvas._objects.length);
-        editor.canvas.backgroundImage = objects[0];
-        const newObj = objects.filter((_: any, index: number) => index !== 0);
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
 
-        newObj.forEach((object: any) => {
-          console.log(object.type);
-          editor.canvas.add(object);
-        });
-
-        editor.canvas.renderAll();
+    svgDoc.querySelectorAll('image').forEach((img) => {
+      const href = img.getAttribute('href') || img.getAttribute('xlink:href');
+      if (href) {
+        img.setAttribute('xlink:href', href);
+        img.setAttribute('crossorigin', 'anonymous');
       }
-    );
+    });
+
+    const serializer = new XMLSerializer();
+    const fixedSVGString = serializer.serializeToString(svgDoc);
+
+    fabric.loadSVGFromString(fixedSVGString, (objects: any[]) => {
+      if (!objects?.length) return;
+
+      editor.canvas._objects.splice(0, editor.canvas._objects.length);
+      editor.canvas.backgroundImage = objects[0];
+
+      const newObj = objects.slice(1);
+
+      newObj.map((object: customFabricObject) => {
+        object.set({ id: crypto.randomUUID() });
+
+        if (object.type === 'text') {
+          const textObj: any = object;
+          const iText = new fabric.Textbox(textObj.text || '', {
+            ...textObj.toObject(),
+            id: textObj.id,
+          });
+          return iText;
+        }
+
+        return object;
+      });
+
+      const group = new fabric.Group(newObj) as customFabricGroup;
+      group.set({ id: crypto.randomUUID() });
+
+      editor.canvas.add(group);
+      editor.canvas.renderAll();
+    });
   }, [editor]);
+
+
 
   const objectProps = useCallback((obj: any) => {
     if (!editor) return;
@@ -159,8 +194,10 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     return editor.canvas.toSVG();
   }, [editor]);
 
-  const highlightObject = useCallback((obj: any) => {
+  const highlightObject = useCallback((event: any, obj: customFabricObject) => {
     if (!editor) return;
+    event.stopPropagation();
+
     const canvas = editor.canvas;
 
     if (obj) {

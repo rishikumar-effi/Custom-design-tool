@@ -2,7 +2,7 @@
     margin: .5em 0;
     flex: 1;
 
-    .placeholder-text{
+    .placeholder-text {
         color: #e0e0e0;
         font-size: 1.2em;
     }
@@ -30,20 +30,21 @@
             flex-direction: column;
             gap: .5em;
 
-            li{
+            li {
                 display: inline-block;
             }
+
 
             .object {
                 cursor: pointer;
                 user-select: none;
                 color: #e0e0e0;
-                opacity: .6;
+                /* opacity: .6; */
                 transition: .3s;
                 border-radius: .25em;
                 position: relative;
 
-                .nested{
+                .nested {
                     display: flex;
                     flex-direction: column;
                     gap: .5em;
@@ -51,7 +52,7 @@
                     margin-top: .5em;
                     position: relative;
 
-                    &::before{
+                    &::before {
                         content: '';
                         width: 1px;
                         height: calc(100% - 2em);
@@ -61,7 +62,7 @@
                     }
                 }
 
-                .object-props{
+                .object-props {
                     display: flex;
                     align-items: center;
                     gap: .5em;
@@ -89,6 +90,10 @@
                         position: absolute;
                         left: -1em;
                     }
+                }
+
+                &[data-focused="false"]:not(:has(li[data-focused="true"])){
+                    opacity: .6;
                 }
 
                 &[data-focused="true"],
