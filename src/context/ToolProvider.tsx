@@ -35,7 +35,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [color, setColor] = useState<string>("#e0e0e0");
   const [objects, setObjects] = useState<fabric.Object[]>([]);
-  const [activeObject, setActiveObject] = useState(null);
+  const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
 
   const undoStack = useRef<fabric.Object[]>([]);
   const redoStack = useRef<fabric.Object[]>([]);
@@ -59,7 +59,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     );
   }, [editor]);
 
-  const objectProps = useCallback((obj: fabric.Object) => {
+  const objectProps = useCallback((obj: any) => {
     if (!editor) return;
     const canvas = editor.canvas;
     const center = canvas.getCenter();
