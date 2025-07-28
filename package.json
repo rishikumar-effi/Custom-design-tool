@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "fabric": "^6.7.0",
     "fabricjs-react": "^1.2.2",
     "prettier": "^3.6.2",
     "react": "^18.3.1",
@@ -23,6 +22,7 @@
     "@vitejs/plugin-react-swc": "^3.10.2",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "fabric": "^5.3.0",
     "globals": "^16.3.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",

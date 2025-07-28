@@ -7,13 +7,7 @@ import {
   useRef,
 } from "react";
 import { useFabricJSEditor } from "fabricjs-react";
-import * as fabric from "fabric";
-
-declare global {
-  interface Window {
-    fabric: typeof import("fabric");
-  }
-}
+import {fabric} from 'fabric';
 
 type ToolContextType = {
   addCircle: () => void;
@@ -47,41 +41,23 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const redoStack = useRef<fabric.Object[]>([]);
 
   const importSVG = useCallback((svgString: string) => {
-  if (!editor) return;
+    if (!editor) return;
 
-  fabric.loadSVGFromString(svgString).then(({ objects, options }: { objects: any[], options: any }) => {
-    const canvas = editor.canvas;
+    fabric.loadSVGFromString(svgString,
+      (objects: any,) => {
+        editor.canvas._objects.splice(0, editor.canvas._objects.length);
+        editor.canvas.backgroundImage = objects[0];
+        const newObj = objects.filter((_: any, index: number) => index !== 0);
 
-    if (!objects || objects.length === 0) {
-      console.error("SVG parsed but returned no objects.");
-      return;
-    }
+        newObj.forEach((object: any) => {
+          console.log(object.type);
+          editor.canvas.add(object);
+        });
 
-    let loadedObj: fabric.Object;
-
-    if (objects.length === 1) {
-      loadedObj = objects[0];
-    } else {
-      loadedObj = fabric.util.groupSVGElements(objects, options);
-    }
-
-    loadedObj.set({
-      id: crypto.randomUUID(),
-      left: canvas.getCenter().left - loadedObj.getScaledWidth() / 4,
-      top: canvas.getCenter().top - loadedObj.getScaledHeight() / 4,
-      scaleX: .5,
-      scaleY: .5,
-      originX: 'left',
-      originY: 'top',
-    });
-
-    canvas.add(loadedObj);
-    canvas.setActiveObject(loadedObj);
-    canvas.requestRenderAll();
-  }).catch((err) => {
-    console.error("Error loading SVG:", err);
-  });
-}, [editor]);
+        editor.canvas.renderAll();
+      }
+    );
+  }, [editor]);
 
   const objectProps = useCallback((obj: fabric.Object) => {
     if (!editor) return;
@@ -102,8 +78,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   }, [editor]);
 
   const addCircle = useCallback(() => {
-    if (!editor || !window.fabric) return;
-    const circle = new window.fabric.Circle({
+    if (!editor || !fabric) return;
+    const circle = new fabric.Circle({
       radius: 30,
       fill: color,
       stroke: "#1e2022",
@@ -113,8 +89,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   }, [editor, color]);
 
   const addRectangle = useCallback(() => {
-    if (!editor || !window.fabric) return;
-    const rect = new window.fabric.Rect({
+    if (!editor || !fabric) return;
+    const rect = new fabric.Rect({
       width: 60,
       height: 40,
       fill: color,
@@ -127,8 +103,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   }, [editor, color]);
 
   const addText = useCallback(() => {
-    if (!editor || !window.fabric) return;
-    const text = new window.fabric.Textbox("Insert text", {
+    if (!editor || !fabric) return;
+    const text = new fabric.Textbox("Insert text", {
       left: 100,
       top: 100,
       fill: color,
