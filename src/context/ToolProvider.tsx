@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useRef,
 } from "react";
 import { useFabricJSEditor } from "fabricjs-react";
 import { fabric } from 'fabric';
@@ -18,15 +17,12 @@ type ToolContextType = {
   addRectangle: () => void;
   addText: () => void;
   onPlaygroundReady: (canvas: fabric.Canvas) => void;
-  undo: () => void;
-  redo: () => void;
   clearAll: () => void;
   color: string;
   setColor: (color: string) => void;
   objects: fabric.Object[];
   activeObject: any;
   deleteSelected: () => void;
-  redoStack: any;
   exportAsSVG: () => string | null;
   highlightObject: (event: any, obj: any) => void;
   importSVG: (svgString: string) => void;
@@ -41,8 +37,22 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
 
-  const undoStack = useRef<fabric.Object[]>([]);
-  const redoStack = useRef<fabric.Object[]>([]);
+  const objectProps = useCallback((obj: any) => {
+    if (!editor) return;
+    const canvas = editor.canvas;
+    const center = canvas.getCenter();
+
+    obj.set({
+      id: crypto.randomUUID(),
+      left: center.left - obj.getScaledWidth() / 2,
+      top: center.top - obj.getScaledHeight() / 2,
+      originX: 'left',
+      originY: 'top'
+    });
+    obj.setCoords();
+    editor.canvas.add(obj);
+    editor.canvas.setActiveObject(obj);
+  }, [editor]);
 
   const importSVG = useCallback(async (svgString: string) => {
     if (!editor) return;
@@ -61,55 +71,18 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const serializer = new XMLSerializer();
     const fixedSVGString = serializer.serializeToString(svgDoc);
 
-    fabric.loadSVGFromString(fixedSVGString, (objects: any[]) => {
+    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[]) => {
       if (!objects?.length) return;
 
-      editor.canvas._objects.splice(0, editor.canvas._objects.length);
-      editor.canvas.backgroundImage = objects[0];
-
-      const newObj = objects.slice(1);
-
-      newObj.map((object: customFabricObject) => {
+      const newObj = objects.map((object: any) => {
         object.set({ id: crypto.randomUUID() });
-
-        if (object.type === 'text') {
-          const textObj: any = object;
-          const iText = new fabric.Textbox(textObj.text || '', {
-            ...textObj.toObject(),
-            id: textObj.id,
-          });
-          return iText;
-        }
 
         return object;
       });
 
       const group = new fabric.Group(newObj) as customFabricGroup;
-      group.set({ id: crypto.randomUUID() });
-
-      editor.canvas.add(group);
-      editor.canvas.renderAll();
+      objectProps(group);
     });
-  }, [editor]);
-
-
-
-  const objectProps = useCallback((obj: any) => {
-    if (!editor) return;
-    const canvas = editor.canvas;
-    const center = canvas.getCenter();
-
-    obj.set({
-      id: crypto.randomUUID(),
-      left: center.left - obj.getScaledWidth() / 2,
-      top: center.top - obj.getScaledHeight() / 2,
-      originX: 'left',
-      originY: 'top'
-    });
-    obj.setCoords();
-    editor.canvas.add(obj);
-    editor.canvas.setActiveObject(obj);
-    redoStack.current = [];
   }, [editor]);
 
   const addCircle = useCallback(() => {
@@ -147,44 +120,48 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     objectProps(text);
   }, [editor, color]);
 
-  const undo = useCallback(() => {
-    if (!editor) return;
-    const objs = editor.canvas.getObjects();
-    if (objs.length > 0) {
-      const last = objs[objs.length - 1];
-      redoStack.current.push(last);
-      editor.canvas.remove(last);
-      editor.canvas.renderAll();
-    }
-  }, [editor]);
-
-  const redo = useCallback(() => {
-    if (!editor) return;
-    const last = redoStack.current.pop();
-    if (last) {
-      editor.canvas.add(last);
-      editor.canvas.renderAll();
-    }
-  }, [editor]);
-
   const deleteSelected = useCallback(() => {
     if (!editor) return;
     const canvas = editor.canvas;
 
     const activeObjects = canvas.getActiveObjects();
 
+    if (!activeObjects.length) return;
+
+    const activeObjectType = canvas.getActiveObject()?.type;
+
     if (activeObjects.length) {
-      activeObjects.forEach((obj: fabric.Object) => canvas.remove(obj));
+      activeObjects.forEach((obj: fabric.Object) => {
+        const isBelongsToGroup = obj.hasOwnProperty('group') && activeObjectType && activeObjectType !== 'activeSelection';
+
+        !isBelongsToGroup && canvas.remove(obj);
+
+        if (isBelongsToGroup) {
+          const group = obj.group as customFabricGroup;
+
+          const remainingObjects = group._objects.filter((obj) => obj !== activeObject);
+
+          group._restoreObjectsState();
+          canvas.remove(group);
+
+          if (group._objects.length > 1) {
+            const newGroup = new fabric.Group(remainingObjects) as customFabricGroup;
+
+            newGroup.set({ id: crypto.randomUUID() });
+
+            canvas.add(newGroup);
+          }
+        }
+      });
+
       canvas.discardActiveObject();
       canvas.requestRenderAll();
     }
-  }, [editor]);
+  }, [editor, activeObject]);
 
   const clearAll = useCallback(() => {
     if (!editor) return;
     editor.canvas.clear();
-    undoStack.current = [];
-    redoStack.current = [];
     setObjects([]);
     setActiveObject(null);
   }, [editor]);
@@ -244,15 +221,12 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     addRectangle,
     addText,
     onPlaygroundReady: onReady,
-    undo,
-    redo,
     clearAll,
     color,
     setColor,
     objects,
     activeObject,
     deleteSelected,
-    redoStack,
     exportAsSVG,
     highlightObject,
     importSVG

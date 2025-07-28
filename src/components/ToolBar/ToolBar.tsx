@@ -6,7 +6,7 @@ import useDialog from '../../hooks/useDialog';
 import { TemplateDialog } from '../Dialog';
 import { useCallback } from 'react';
 
-const { DrawFrame, DrawCircle, DrawRectangle, AddText, Undo, Redo, Delete, ClearAll, GetSVG } = ToolBarIcons;
+const { DrawFrame, DrawCircle, DrawRectangle, AddText, Delete, ClearAll, GetSVG } = ToolBarIcons;
 
 const downloadHandler = (svg: any) => {
     if (!svg) return;
@@ -23,7 +23,7 @@ const downloadHandler = (svg: any) => {
 };
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addText, activeObject, undo, redo, objects, clearAll, deleteSelected, redoStack, exportAsSVG, importSVG } = useTool();
+    const { addCircle, addRectangle, addText, activeObject, objects, clearAll, deleteSelected, exportAsSVG, importSVG } = useTool();
 
     const { Dialog, openDialog, closeDialog } = useDialog();
 
@@ -72,26 +72,6 @@ const ToolBar = () => {
                         </Icon>
                     </IconButton>
                     <span>Add Text</span>
-                </label>
-            </li>
-            <li>
-                <label htmlFor="undo" title="Undo">
-                    <IconButton id="undo" disabled={noObjectsInCanvas} onClick={undo} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Icon style={{ width: '70%', height: '70%' }}>
-                            <Undo />
-                        </Icon>
-                    </IconButton>
-                    <span>Undo</span>
-                </label>
-            </li>
-            <li>
-                <label htmlFor="redo" title="Redo">
-                    <IconButton id="redo" onClick={redo} disabled={redoStack.current && redoStack.current.length === 0} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Icon style={{ width: '70%', height: '70%' }}>
-                            <Redo />
-                        </Icon>
-                    </IconButton>
-                    <span>Redo</span>
                 </label>
             </li>
             <li>
