@@ -74,13 +74,21 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[]) => {
       if (!objects?.length) return;
 
-      const newObj = objects.map((object: any) => {
+      const newObjs = objects.map((object: any) => {
         object.set({ id: crypto.randomUUID() });
+
+        if (object.type === 'text') {
+          const textObj = object as fabric.Text;
+
+          return new fabric.Textbox(textObj.text ?? '', {
+            ...textObj,
+          });
+        }
 
         return object;
       });
 
-      const group = new fabric.Group(newObj) as customFabricGroup;
+      const group = new fabric.Group(newObjs) as customFabricGroup;
       objectProps(group);
     });
   }, [editor]);
