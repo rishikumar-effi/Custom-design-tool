@@ -4,6 +4,8 @@ const DrawCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" he
 
 const DrawRectangle = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><path fill="currentColor" d="M2 20V4h20v16zm2-2h16V6H4zm0 0V6z" /></svg>
 
+const DrawLine = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><path fill="currentColor" d="M21.71 3.29a1 1 0 0 0-1.42 0l-18 18a1 1 0 0 0 0 1.42a1 1 0 0 0 1.42 0l18-18a1 1 0 0 0 0-1.42"/></svg>
+
 const AddText = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M10.318 16.978h1.648m0 0h1.664m-1.664 0v-9.48m-4.961 1.72c-.138-1.057.138-1.524 1.11-1.786c2.49-.67 5.193-.557 7.697.06c.943.234 1.265.649 1.13 1.726" /><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10" /></g></svg>
 
 const Text = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M3 5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V6h-6v13h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2V6H5v1a1 1 0 0 1-2 0V5Z" clipRule="evenodd" /></svg>
@@ -24,4 +26,4 @@ const Group = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height=
 
 const Image = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21h1.01c.972 0 1.457 0 1.725-.203a1 1 0 0 0 .395-.737c.02-.335-.25-.74-.788-1.547l-3.01-4.516c-.446-.668-.668-1.002-.949-1.118a1 1 0 0 0-.766 0c-.28.116-.503.45-.948 1.118l-.745 1.116M19 21 11.316 9.9c-.442-.638-.663-.957-.94-1.07a1 1 0 0 0-.753 0c-.276.113-.497.432-.938 1.07l-5.947 8.59c-.563.813-.844 1.22-.828 1.557a1 1 0 0 0 .391.747C2.57 21 3.065 21 4.054 21H19Zm2-15a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
 
-export const ToolBarIcons = { DrawFrame, DrawCircle, DrawRectangle, AddText, Text, Undo, Redo, Delete, ClearAll, Export, GetSVG, Group, Image };
+export const ToolBarIcons = { DrawFrame, DrawCircle, DrawRectangle, AddText, Text, Undo, Redo, Delete, ClearAll, Export, GetSVG, Group, Image, DrawLine };

@@ -5,7 +5,7 @@ import useObjectSync from "../../hooks/useObjectSync";
 const CircleConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
     const [fill, setFill] = useState<string>(object ? object.fill : '#e0e0e0');
     const [strokeColor, setStrokeColor] = useState(object ? object.stroke: '#1e2022ff');
-    const [strokeWidth, setStrokeWidth] = useState<number>(object ? object.strokeWidth : 1);
+    const [strokeWidth, setStrokeWidth] = useState<number>(object ? object.strokeWidth : 0);
 
     const fillHandler = useCallback((e: any) => {
         const newFill = e.target.value;
@@ -29,7 +29,7 @@ const CircleConfigurations = ({ object, handleChange }: { object: any, handleCha
     }, [handleChange]);
 
     const objectHandler = useCallback(() => {
-        const stroke = object.strokeWidth || 1;
+        const stroke = object.strokeWidth || 0;
         const fill = object.fill || "#e0e0e0";
         const strokeColor = object.stroke || '#1e2122';
 

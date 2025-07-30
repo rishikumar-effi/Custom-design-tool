@@ -3,9 +3,10 @@ import CircleConfigurations from "./CircleConfigurations";
 import RectangleConfigurations from "./RectangleConfigurations";
 import TextConfigurations from "./TextConfigurations";
 import styles from './Configurables.module.css';
+import LineConfigurations from "./LineConfigurations";
 
 const Configurables = ({ activeObject }: { activeObject: any }) => {
-    const handleChange = useCallback((prop: string | Record<string, number | string>, value?: number | string) => {
+    const handleChange = useCallback((prop: string | Record<string, number | string>, value?: number | string | Array<number>) => {
         if (!activeObject || !activeObject.canvas) return;
 
         if (typeof prop === 'string') {
@@ -28,6 +29,8 @@ const Configurables = ({ activeObject }: { activeObject: any }) => {
                 return <RectangleConfigurations object={activeObject} handleChange={handleChange} />;
             case 'textbox':
                 return <TextConfigurations object={activeObject} handleChange={handleChange} />;
+            case 'line':
+                return <LineConfigurations object={activeObject} handleChange={handleChange} />;
             default:
                 return <p>No configurator available</p>
         }

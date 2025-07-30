@@ -5,7 +5,7 @@ import useObjectSync from "../../hooks/useObjectSync";
 const RectangleConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
     const [fill, setFill] = useState<string>(object ? object.fill : '#e0e0e0');
     const [strokeColor, setStrokeColor] = useState(object ? object.stroke: '#1e2122');
-    const [strokeWidth, setStrokeWidth] = useState<number>(object ? object.strokeWidth : 1);
+    const [strokeWidth, setStrokeWidth] = useState<number>(object ? object.strokeWidth : 0);
     const [radius, setRadius] = useState<number>(object ? object.rx || object.ry : 0);
 
     const fillHandler = useCallback((e: any) => {
@@ -40,7 +40,7 @@ const RectangleConfigurations = ({ object, handleChange }: { object: any, handle
         const strokeColor = object.stroke || '#1e2122';
 
         setFill(object.fill || '#e0e0e0');
-        setStrokeWidth(object.strokeWidth || 1);
+        setStrokeWidth(object.strokeWidth || 0);
         setStrokeColor(strokeColor);
     }, [object]);
 

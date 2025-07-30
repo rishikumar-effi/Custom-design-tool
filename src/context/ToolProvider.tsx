@@ -15,6 +15,7 @@ type customFabricGroup = fabric.Group & { id: string, label?: string };
 type ToolContextType = {
   addCircle: () => void;
   addRectangle: () => void;
+  addLine: () => void,
   addText: () => void;
   onPlaygroundReady: (canvas: fabric.Canvas) => void;
   clearAll: () => void;
@@ -130,6 +131,22 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     });
     objectProps(rect);
   }, [editor, color]);
+
+  const addLine = useCallback(() => {
+    if (!editor || !fabric) return;
+
+    const line = new fabric.Line([50, 50, 150, 50], {
+      selectable: true,
+      hasControls: true,
+      hasBorders: true,
+      stroke: "#e0e0e0",
+      strokeWidth: 1,
+      // strokeLineCap: 'round',
+      strokeDashArray: [1, 0]
+    });
+
+    objectProps(line);
+  }, [editor]);
 
   const addText = useCallback(() => {
     if (!editor || !fabric) return;
@@ -260,6 +277,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const values: ToolContextType = {
     addCircle,
     addRectangle,
+    addLine,
     addText,
     onPlaygroundReady: onReady,
     clearAll,

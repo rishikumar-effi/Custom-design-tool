@@ -6,7 +6,7 @@ import useDialog from '../../hooks/useDialog';
 import { TemplateDialog } from '../Dialog';
 import { useCallback } from 'react';
 
-const { DrawFrame, DrawCircle, DrawRectangle, AddText, Delete, ClearAll, GetSVG } = ToolBarIcons;
+const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, GetSVG } = ToolBarIcons;
 
 const downloadHandler = (svg: any) => {
     if (!svg) return;
@@ -23,7 +23,7 @@ const downloadHandler = (svg: any) => {
 };
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addText, activeObject, objects, clearAll, deleteSelected, exportAsSVG, importSVG } = useTool();
+    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, exportAsSVG, importSVG } = useTool();
 
     const { Dialog, openDialog, closeDialog } = useDialog();
 
@@ -62,6 +62,16 @@ const ToolBar = () => {
                         </Icon>
                     </IconButton>
                     <span>Draw Rectangle</span>
+                </label>
+            </li>
+            <li>
+                <label htmlFor="draw-line" title="Draw Line">
+                    <IconButton id="draw-line" onClick={addLine} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon style={{ width: '80%', height: '80%' }}>
+                            <DrawLine />
+                        </Icon>
+                    </IconButton>
+                    <span>Draw Line</span>
                 </label>
             </li>
             <li>

@@ -6,6 +6,8 @@ import CanvasElements from '../CanvasElements';
 const SidePanel = () => {
     const { highlightObject, activeObject, objects } = useTool();
 
+    console.log(activeObject);
+
     return (<aside className={styles.component}>
         <Configurables activeObject={activeObject}/>
         <CanvasElements objects={objects} activeObject={activeObject} highlightObject={highlightObject}/>

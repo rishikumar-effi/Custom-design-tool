@@ -86,7 +86,7 @@
         color: #e0e0e0;
 
         label:not(.configurable-icon) {
-            min-width: 6em;
+            min-width: 8em;
             letter-spacing: .5px;
             font-size: 1.2em;
         }
