@@ -3,9 +3,10 @@ import React from 'react';
 import { ToolBarIcons, Icon } from '../Icons';
 const { DrawCircle, DrawRectangle, Text, Group, Image } = ToolBarIcons;
 
-const labelElement = (label: string) => {
+const labelElement = (obj: any) => {
     let elementName;
     let element;
+    const label = obj.type;
 
     switch (label) {
         case 'circle':
@@ -23,7 +24,7 @@ const labelElement = (label: string) => {
             break;
         case 'group':
             element = Group;
-            elementName = "Group";
+            elementName = obj.label || "Group";
             break;
         case 'image':
             element = Image;
@@ -44,7 +45,7 @@ const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: a
             {objects.length > 0 ? <ul>
                 {
                     objects.map((obj: any) => {
-                        const { element, elementName } = labelElement(obj.type);
+                        const { element, elementName } = labelElement(obj);
 
                         return <li className={styles.object} key={obj.id} data-focused={activeObject && activeObject.id === obj.id} onClick={(event) => highlightObject(event, obj)}>
                             <div className={styles['object-props']}>
@@ -57,7 +58,7 @@ const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: a
                                 obj._objects && <ul className={styles.nested}>
                                     {
                                         obj._objects.map((nestedObj: any, index: number) => {
-                                            const { element, elementName } = labelElement(nestedObj.type);
+                                            const { element, elementName } = labelElement(nestedObj);
 
                                             return <li key={index} className={styles.object} data-focused={activeObject && activeObject.id === nestedObj.id} onClick={(event) => highlightObject(event, nestedObj)}>
                                                 <div className={styles['object-props']}>

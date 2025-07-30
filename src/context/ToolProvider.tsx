@@ -10,7 +10,7 @@ import { fabric } from 'fabric';
 
 type customFabricObject = fabric.Object & { id: string };
 
-type customFabricGroup = fabric.Group & { id: string };
+type customFabricGroup = fabric.Group & { id: string, label?: string };
 
 type ToolContextType = {
   addCircle: () => void;
@@ -59,6 +59,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+    const center = editor.canvas.getCenter();
 
     svgDoc.querySelectorAll('image').forEach((img) => {
       const href = img.getAttribute('href') || img.getAttribute('xlink:href');
@@ -82,6 +83,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
           return new fabric.Textbox(textObj.text ?? '', {
             ...textObj,
+            type: 'textbox',
           });
         }
 
@@ -89,7 +91,18 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       const group = new fabric.Group(newObjs) as customFabricGroup;
-      objectProps(group);
+
+      const scaleTo = .5;
+
+      group.scale(scaleTo);
+      group.set({
+        label: 'Template', id: crypto.randomUUID(), left: center.left - (group.getScaledWidth() / 2),
+        top: center.top - (group.getScaledHeight() / 2),
+        subTargetCheck: true
+      });
+      group.setCoords();
+      editor.canvas.add(group);
+      editor.canvas.setActiveObject(group);
     });
   }, [editor]);
 
@@ -155,7 +168,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
           if (group._objects.length > 1) {
             const newGroup = new fabric.Group(remainingObjects) as customFabricGroup;
 
-            newGroup.set({ id: crypto.randomUUID() });
+            newGroup.set({ id: crypto.randomUUID(), label: 'Template' });
 
             canvas.add(newGroup);
           }
@@ -207,6 +220,25 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       setActiveObject(canvas.getActiveObject());
     };
 
+    const selectingGroupObject = (opt: any) => {
+      const target = opt.target;
+
+      if (target?.type === 'group') {
+
+        const group = target as fabric.Group;
+
+        group._restoreObjectsState();
+        editor.canvas.remove(group);
+
+        group.getObjects().forEach((obj) => {
+          editor.canvas.add(obj);
+        });
+
+        editor.canvas.requestRenderAll();
+      }
+    }
+
+    canvas.on('mouse:dblclick', selectingGroupObject);
     canvas.on("object:added", updateObjects);
     canvas.on("object:removed", updateObjects);
     canvas.on("object:modified", updateObjects);
@@ -215,6 +247,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     canvas.on("selection:cleared", () => setActiveObject(null));
 
     return () => {
+      canvas.off('mouse:dblclick', selectingGroupObject);
       canvas.off("object:added", updateObjects);
       canvas.off("object:removed", updateObjects);
       canvas.off("object:modified", updateObjects);
