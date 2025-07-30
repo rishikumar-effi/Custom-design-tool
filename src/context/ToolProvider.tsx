@@ -30,7 +30,8 @@ type ToolContextType = {
   highlightObject: (event: any, obj: any) => void;
   importSVG: (svgString: string) => void;
   addBrush: () => void,
-  inEditingMode: boolean
+  inEditingMode: boolean,
+  exitEditingMode: () => void
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -42,6 +43,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
+
+  const exitEditingMode = useCallback(() => setIsEditingMode(false), [editor, inEditingMode]);
 
   useEffect(() => setIsEditingMode(editor?.canvas.isDrawingMode ?? false), [editor?.canvas.isDrawingMode]);
 
@@ -171,8 +174,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     const canvas = editor.canvas;
 
-    canvas.isDrawingMode = !canvas.isDrawingMode;
-    setIsEditingMode(canvas.isDrawingMode);
+    canvas.isDrawingMode = true;
+    setIsEditingMode(true);
 
     canvas.freeDrawingBrush.color = "#1e2022";
     canvas.freeDrawingBrush.width = 2;
@@ -319,7 +322,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     highlightObject,
     importSVG,
     addBrush,
-    inEditingMode
+    inEditingMode,
+    exitEditingMode
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

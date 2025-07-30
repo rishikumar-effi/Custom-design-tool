@@ -31,8 +31,6 @@ const ToolBar = () => {
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
-    console.log(inEditingMode);
-
     return <section className={styles.component}>
         <Dialog><TemplateDialog importSVG={importSVG} closeDialog={closeDialog} /></Dialog>
         <ul>
