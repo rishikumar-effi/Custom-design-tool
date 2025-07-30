@@ -3,17 +3,9 @@ import styles from './Configurables.module.css';
 import useObjectSync from "../../hooks/useObjectSync";
 
 const TextConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
-    const [width, setWidth] = useState<number>(0);
     const [color, setColor] = useState<string>(object ? object.fill : '#e0e0e0');
     const [text, setText] = useState<string>(object ? object.text : 'Insert Text');
     const [fontSize, setFontSize] = useState<number>(object ? object.fontSize : 0);
-
-    const widthHandler = useCallback((e: any) => {
-        const newWidth = Number(e.target.value);
-        setWidth(newWidth);
-
-        handleChange('width', newWidth);
-    }, [handleChange]);
 
     const colorHandler = useCallback((e: any) => {
         const newColor = e.target.value;
@@ -39,9 +31,6 @@ const TextConfigurations = ({ object, handleChange }: { object: any, handleChang
     }, [handleChange]);
 
     const objectHandler = useCallback(() => {
-        const actualWidth = Math.round(object.width || 0);
-
-        setWidth(actualWidth);
         setColor(object.fill || '#e0e0e0');
         setText(object.text || 'Insert Text');
         setFontSize(object.fontSize || 0);
@@ -51,15 +40,11 @@ const TextConfigurations = ({ object, handleChange }: { object: any, handleChang
 
     return <>
         <div className={styles.configurable}>
-            <label htmlFor="set-width">Width</label>
-            <input onChange={widthHandler} type="number" min={0} id="set-width" name="width" value={width} />
-        </div>
-        <div className={styles.configurable}>
             <label htmlFor="set-fontsize">Font Size</label>
             <input onChange={fontSizeHandler} min={0} type="number" id="set-fontsize" name="font size" value={fontSize} />
         </div>
         <div className={styles.configurable}>
-            <label htmlFor="set-fill">Fill</label>
+            <label htmlFor="set-fill">Color</label>
             <input type="color" name="fill" id="set-fill" value={color} onChange={colorHandler} />
         </div>
         <div className={styles.configurable}>
