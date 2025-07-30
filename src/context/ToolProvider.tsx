@@ -44,9 +44,13 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
 
-  const exitEditingMode = useCallback(() => setIsEditingMode(false), [editor, inEditingMode]);
+  const exitEditingMode = useCallback(() => { 
+    setIsEditingMode(false);
+    
+    if(editor) editor.canvas.isDrawingMode = false;
+  }, [editor, inEditingMode]);
 
-  useEffect(() => setIsEditingMode(editor?.canvas.isDrawingMode ?? false), [editor?.canvas.isDrawingMode]);
+  useEffect(() => setIsEditingMode(editor?.canvas.isDrawingMode ?? false), [editor?.canvas.isDrawingMode, inEditingMode]);
 
   const objectProps = useCallback((obj: any) => {
     if (!editor) return;
