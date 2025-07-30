@@ -4,6 +4,7 @@ import RectangleConfigurations from "./RectangleConfigurations";
 import TextConfigurations from "./TextConfigurations";
 import styles from './Configurables.module.css';
 import LineConfigurations from "./LineConfigurations";
+import PathConfigurations from "./PathConfigurations";
 
 const Configurables = ({ activeObject }: { activeObject: any }) => {
     const handleChange = useCallback((prop: string | Record<string, number | string>, value?: number | string | Array<number>) => {
@@ -31,6 +32,8 @@ const Configurables = ({ activeObject }: { activeObject: any }) => {
                 return <TextConfigurations object={activeObject} handleChange={handleChange} />;
             case 'line':
                 return <LineConfigurations object={activeObject} handleChange={handleChange} />;
+            case 'path':
+                return <PathConfigurations object={activeObject} handleChange={handleChange} />;
             default:
                 return <p>No configurator available</p>
         }

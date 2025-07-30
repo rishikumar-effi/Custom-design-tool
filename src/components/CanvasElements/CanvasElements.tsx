@@ -1,7 +1,7 @@
 import styles from './CanvasElements.module.css';
 import React from 'react';
 import { ToolBarIcons, Icon } from '../Icons';
-const { DrawCircle, DrawRectangle, Text, Group, Image, DrawLine } = ToolBarIcons;
+const { DrawCircle, DrawRectangle, Text, Group, Image, DrawLine, FreeDraw } = ToolBarIcons;
 
 const labelElement = (obj: any) => {
     let elementName;
@@ -33,6 +33,10 @@ const labelElement = (obj: any) => {
         case 'line':
             element = DrawLine;
             elementName = "Line";
+            break;
+        case 'path':
+            element = FreeDraw;
+            elementName = "Path";
             break;
         default:
             elementName = label;

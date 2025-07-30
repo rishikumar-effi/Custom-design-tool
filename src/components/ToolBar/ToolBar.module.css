@@ -20,7 +20,8 @@
             transition: .3s;
 
             &:hover:has(button:not(:disabled)),
-            &.clicked {
+            &.clicked,
+            &[data-enabled="true"] {
                 border-color: #626262;
             }
 
@@ -59,17 +60,20 @@
             }
 
             &:hover label:has(button:not(:disabled)),
-            &.clicked label {
+            &.clicked label,
+            &[data-enabled="true"] label {
                 opacity: 1;
                 box-shadow: unset;
                 /* background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45)); */
             }
 
-            &.clicked label button {
+            &.clicked label button,
+            &[data-enabled="true"] label button {
                 opacity: 1;
             }
 
-            &.clicked {
+            &.clicked,
+            &[data-enabled="true"] {
                 position: relative;
                 border-style: solid;
             }
@@ -78,7 +82,8 @@
                 border-style: solid;
             }
 
-            &.clicked::before {
+            &.clicked::before,
+            &[data-enabled="true"]::before {
                 content: '';
                 --size: .5em;
                 width: var(--size);
@@ -96,23 +101,23 @@
     }
 
     @media (max-width: 1000px) {
-        &{
+        & {
             width: 100%;
             max-width: unset;
             flex: unset;
             flex-direction: row;
 
-            & ul{
+            & ul {
                 flex-direction: row;
             }
-            
+
             li {
                 width: fit-content;
-    
+
                 label {
                     padding: .5em !important;
                 }
-    
+
                 & span {
                     display: none;
                 }

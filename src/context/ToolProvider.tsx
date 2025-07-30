@@ -12,6 +12,8 @@ type customFabricObject = fabric.Object & { id: string };
 
 type customFabricGroup = fabric.Group & { id: string, label?: string };
 
+type customPath = fabric.Path & { id: string };
+
 type ToolContextType = {
   addCircle: () => void;
   addRectangle: () => void;
@@ -27,6 +29,8 @@ type ToolContextType = {
   exportAsSVG: () => string | null;
   highlightObject: (event: any, obj: any) => void;
   importSVG: (svgString: string) => void;
+  addBrush: () => void,
+  inEditingMode: boolean
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -37,11 +41,15 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [color, setColor] = useState<string>("#e0e0e0");
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
+  const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
+
+  useEffect(() => setIsEditingMode(editor?.canvas.isDrawingMode ?? false), [editor?.canvas.isDrawingMode]);
 
   const objectProps = useCallback((obj: any) => {
     if (!editor) return;
     const canvas = editor.canvas;
     const center = canvas.getCenter();
+    canvas.isDrawingMode = false;
 
     obj.set({
       id: crypto.randomUUID(),
@@ -157,6 +165,27 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     });
     objectProps(text);
   }, [editor, color]);
+
+  const addBrush = useCallback(() => {
+    if (!editor || !fabric) return;
+
+    const canvas = editor.canvas;
+
+    canvas.isDrawingMode = !canvas.isDrawingMode;
+    setIsEditingMode(canvas.isDrawingMode);
+
+    canvas.freeDrawingBrush.color = "#1e2022";
+    canvas.freeDrawingBrush.width = 2;
+
+    const handlePathCreated = (e: any) => {
+      const path = e.path as customPath;
+      path.set({ id: crypto.randomUUID() });
+      path.setCoords();
+    };
+
+    canvas.off('path:created', handlePathCreated);
+    canvas.on('path:created', handlePathCreated);
+  }, [editor]);
 
   const deleteSelected = useCallback(() => {
     if (!editor) return;
@@ -288,7 +317,9 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     deleteSelected,
     exportAsSVG,
     highlightObject,
-    importSVG
+    importSVG,
+    addBrush,
+    inEditingMode
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

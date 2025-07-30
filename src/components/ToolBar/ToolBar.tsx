@@ -6,7 +6,7 @@ import useDialog from '../../hooks/useDialog';
 import { TemplateDialog } from '../Dialog';
 import { useCallback } from 'react';
 
-const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, GetSVG } = ToolBarIcons;
+const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, GetSVG, FreeDraw } = ToolBarIcons;
 
 const downloadHandler = (svg: any) => {
     if (!svg) return;
@@ -23,7 +23,7 @@ const downloadHandler = (svg: any) => {
 };
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, exportAsSVG, importSVG } = useTool();
+    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, exportAsSVG, importSVG, addBrush, inEditingMode } = useTool();
 
     const { Dialog, openDialog, closeDialog } = useDialog();
 
@@ -31,8 +31,10 @@ const ToolBar = () => {
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
+    console.log(inEditingMode);
+
     return <section className={styles.component}>
-        <Dialog><TemplateDialog importSVG={importSVG} closeDialog={closeDialog}/></Dialog>
+        <Dialog><TemplateDialog importSVG={importSVG} closeDialog={closeDialog} /></Dialog>
         <ul>
             <li>
                 <label htmlFor="draw-frame" title="Draw Frame">
@@ -72,6 +74,16 @@ const ToolBar = () => {
                         </Icon>
                     </IconButton>
                     <span>Draw Line</span>
+                </label>
+            </li>
+            <li data-enabled={inEditingMode}>
+                <label htmlFor="free-draw" title="Draw">
+                    <IconButton onClick={addBrush} id="free-draw" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon style={{ width: '80%', height: '80%' }}>
+                            <FreeDraw />
+                        </Icon>
+                    </IconButton>
+                    <span>Free Draw</span>
                 </label>
             </li>
             <li>
