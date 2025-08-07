@@ -291,6 +291,12 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
 
+    const deleteObjectsOnKeyDown = (event: KeyboardEvent) => {
+      if(event.key !== 'Delete') return;
+      deleteSelected();
+    }
+
+    document.addEventListener('keydown', deleteObjectsOnKeyDown);
     canvas.on('mouse:dblclick', selectingGroupObject);
     canvas.on("object:added", updateObjects);
     canvas.on("object:removed", updateObjects);
@@ -300,6 +306,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     canvas.on("selection:cleared", () => setActiveObject(null));
 
     return () => {
+      document.removeEventListener('keydown', deleteObjectsOnKeyDown);
       canvas.off('mouse:dblclick', selectingGroupObject);
       canvas.off("object:added", updateObjects);
       canvas.off("object:removed", updateObjects);
