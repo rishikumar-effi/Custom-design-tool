@@ -21,7 +21,7 @@ const labelElement = (obj: any) => {
         case 'textbox':
         case 'text':
             element = Text;
-            elementName = "Text";
+            elementName = obj.text || "Text";
             break;
         case 'group':
             element = Group;
@@ -65,16 +65,18 @@ const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehi
                                     <span>
                                         {elementName}
                                     </span>
-                                    {(index !== 0) && <IconButton title="Move to Previous" onClick={() => moveObjectForward(obj.id)}>
-                                        <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
-                                            <MoveForward />
-                                        </Icon>
-                                    </IconButton>}
-                                    {(index !== (objects.length - 1)) && <IconButton title="Move to Next" onClick={() => moveObjectBehind(obj.id)}>
-                                        <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
-                                            <MoveBehind />
-                                        </Icon>
-                                    </IconButton>}
+                                    <div>
+                                        {(index !== 0) && <IconButton title="Move Backward" onClick={() => moveObjectForward(obj.id)}>
+                                            <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
+                                                <MoveForward />
+                                            </Icon>
+                                        </IconButton>}
+                                        {(index !== (objects.length - 1)) && <IconButton title="Move Forward" onClick={() => moveObjectBehind(obj.id)}>
+                                            <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
+                                                <MoveBehind />
+                                            </Icon>
+                                        </IconButton>}
+                                    </div>
                                 </div>
                             </div>
                             {

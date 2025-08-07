@@ -97,6 +97,10 @@
                         width: 100%;
                         font-size: 1em;
                         letter-spacing: .5px;
+                        max-width: 130px;
+                        text-wrap-mode: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
                     }
 
                     button{
