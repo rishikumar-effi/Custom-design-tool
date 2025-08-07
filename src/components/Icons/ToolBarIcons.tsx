@@ -28,4 +28,8 @@ const Group = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height=
 
 const Image = () => <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21h1.01c.972 0 1.457 0 1.725-.203a1 1 0 0 0 .395-.737c.02-.335-.25-.74-.788-1.547l-3.01-4.516c-.446-.668-.668-1.002-.949-1.118a1 1 0 0 0-.766 0c-.28.116-.503.45-.948 1.118l-.745 1.116M19 21 11.316 9.9c-.442-.638-.663-.957-.94-1.07a1 1 0 0 0-.753 0c-.276.113-.497.432-.938 1.07l-5.947 8.59c-.563.813-.844 1.22-.828 1.557a1 1 0 0 0 .391.747C2.57 21 3.065 21 4.054 21H19Zm2-15a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
 
-export const ToolBarIcons = { DrawFrame, DrawCircle, DrawRectangle, AddText, Text, Undo, Redo, Delete, ClearAll, Export, GetSVG, Group, Image, DrawLine, FreeDraw };
+const MoveForward = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M18.293 15.29a1 1 0 0 0 0-1.415L13.4 8.988a2 2 0 0 0-2.828 0l-4.89 4.89a1 1 0 1 0 1.414 1.415l4.185-4.186a1 1 0 0 1 1.415 0l4.182 4.182a1 1 0 0 0 1.414 0Z"/></svg>
+
+const MoveBehind = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M5.707 9.71a1 1 0 0 0 0 1.415l4.892 4.887a2 2 0 0 0 2.828 0l4.89-4.89a1 1 0 1 0-1.414-1.415l-4.185 4.186a1 1 0 0 1-1.415 0L7.121 9.71a1 1 0 0 0-1.414 0Z"/></svg>
+
+export const ToolBarIcons = { DrawFrame, DrawCircle, DrawRectangle, AddText, Text, Undo, Redo, Delete, ClearAll, Export, GetSVG, Group, Image, DrawLine, FreeDraw, MoveForward, MoveBehind };

@@ -5,7 +5,6 @@ import useObjectSync from "../../hooks/useObjectSync";
 const LineConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string | Array<number>) => void }) => {
     const [color, setColor] = useState<string>(object ? object.stroke : '#e0e0e0');
     const [strokeWidth, setStrokeWidth] = useState<number>(object ? object.strokeWidth : 0);
-    console.log(object?.strokeDashArray);
     const [strokeLength, setStrokeLength] = useState(object ? object?.strokeDashArray[0] : 0);
     const [strokeGap, setStrokeGap] = useState(object ? object?.strokeDashArray[0] : 0);
 

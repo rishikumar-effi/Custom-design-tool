@@ -68,15 +68,17 @@
                     gap: .5em;
                 }
 
-                span {
+                .object-info{
                     width: 100%;
-                    font-size: 1em;
-                    letter-spacing: .5px;
-                    padding: .25em 1em;
+                    padding: .25em .5em .25em 1em;
                     margin-left: 1em;
                     background: linear-gradient(to bottom right, rgb(70 70 70), rgb(45, 45, 45));
                     position: relative;
                     border-radius: .25em;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
 
                     &::before {
                         content: '';
@@ -90,9 +92,26 @@
                         position: absolute;
                         left: -1em;
                     }
+
+                    span {
+                        width: 100%;
+                        font-size: 1em;
+                        letter-spacing: .5px;
+                    }
+
+                    button{
+                        margin-left: .5em;
+                        background: transparent;
+
+                        &:disabled{
+                            opacity: .25;
+                            cursor: not-allowed;
+                        }
+                    }
                 }
 
-                &[data-focused="false"]:not(:has(li[data-focused="true"])){
+                &[data-focused="false"]:not(:has(li[data-focused="true"])),
+                &:not([data-focused]){
                     opacity: .6;
                 }
 

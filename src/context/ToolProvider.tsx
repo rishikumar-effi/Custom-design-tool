@@ -31,7 +31,9 @@ type ToolContextType = {
   importSVG: (svgString: string) => void;
   addBrush: () => void,
   inEditingMode: boolean,
-  exitEditingMode: () => void
+  exitEditingMode: () => void,
+  moveObjectForward: (objectId: string) => void,
+  moveObjectBehind: (objectId: string) => void,
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -44,10 +46,10 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
 
-  const exitEditingMode = useCallback(() => { 
+  const exitEditingMode = useCallback(() => {
     setIsEditingMode(false);
-    
-    if(editor) editor.canvas.isDrawingMode = false;
+
+    if (editor) editor.canvas.isDrawingMode = false;
   }, [editor, inEditingMode]);
 
   useEffect(() => setIsEditingMode(editor?.canvas.isDrawingMode ?? false), [editor?.canvas.isDrawingMode, inEditingMode]);
@@ -261,6 +263,52 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     setActiveObject(obj);
   }, [editor]);
 
+  const moveObjectForward = (objectId: string) => {
+    if (objects.length === 0 || !editor) return;
+
+    const canvas = editor.canvas;
+    const index = objects.findIndex(obj => (obj as customFabricObject).id === objectId);
+    if (index <= 0) return;
+
+    const newObjects = [...objects];
+    const [item] = newObjects.splice(index, 1);
+    newObjects.splice(index - 1, 0, item);
+    setObjects(newObjects);
+
+    const fabricObj = canvas.getObjects().find(obj => (obj as customFabricObject).id === objectId);
+
+    if (fabricObj) {
+      const currentIndex = canvas.getObjects().indexOf(fabricObj);
+      if (currentIndex > 0) {
+        canvas.moveTo(fabricObj, currentIndex - 1);
+        canvas.renderAll();
+      }
+    }
+  };
+
+  const moveObjectBehind = (objectId: string) => {
+    if (objects.length === 0 || !editor) return;
+
+    const canvas = editor.canvas;
+    const index = objects.findIndex(obj => (obj as customFabricObject).id === objectId);
+    if (index === -1 || index >= objects.length - 1) return;
+
+    const newObjects = [...objects];
+    const [item] = newObjects.splice(index, 1);
+    newObjects.splice(index + 1, 0, item);
+    setObjects(newObjects);
+
+    const fabricObj = canvas.getObjects().find(obj => (obj as customFabricObject).id === objectId);
+
+    if (fabricObj) {
+      const currentIndex = canvas.getObjects().indexOf(fabricObj);
+      if (currentIndex < canvas.getObjects().length - 1) {
+        canvas.moveTo(fabricObj, currentIndex + 1);
+        canvas.renderAll();
+      }
+    }
+  };
+
   useEffect(() => {
     if (!editor) return;
     const canvas = editor.canvas;
@@ -292,7 +340,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const deleteObjectsOnKeyDown = (event: KeyboardEvent) => {
-      if(event.key !== 'Delete') return;
+      if (event.key !== 'Delete') return;
       deleteSelected();
     }
 
@@ -334,7 +382,9 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     importSVG,
     addBrush,
     inEditingMode,
-    exitEditingMode
+    exitEditingMode,
+    moveObjectForward,
+    moveObjectBehind
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

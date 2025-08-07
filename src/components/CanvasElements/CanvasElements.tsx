@@ -1,7 +1,8 @@
 import styles from './CanvasElements.module.css';
 import React from 'react';
 import { ToolBarIcons, Icon } from '../Icons';
-const { DrawCircle, DrawRectangle, Text, Group, Image, DrawLine, FreeDraw } = ToolBarIcons;
+import IconButton from '../IconButton';
+const { DrawCircle, DrawRectangle, Text, Group, Image, DrawLine, FreeDraw, MoveForward, MoveBehind } = ToolBarIcons;
 
 const labelElement = (obj: any) => {
     let elementName;
@@ -46,13 +47,13 @@ const labelElement = (obj: any) => {
     return { element, elementName }
 }
 
-const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: any, activeObject: any, highlightObject: any }) => {
+const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehind, moveObjectForward }: { objects: any, activeObject: any, highlightObject: any, moveObjectBehind: (objectId: string) => void, moveObjectForward: (objectId: string) => void }) => {
     return <div className={styles.component}>
         <fieldset>
             <legend>Element(s) in Canvas</legend>
             {objects.length > 0 ? <ul>
                 {
-                    objects.map((obj: any) => {
+                    objects.map((obj: any, index: number) => {
                         const { element, elementName } = labelElement(obj);
 
                         return <li className={styles.object} key={obj.id} data-focused={activeObject && activeObject.id === obj.id} onClick={(event) => highlightObject(event, obj)}>
@@ -60,7 +61,21 @@ const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: a
                                 <Icon style={{ width: '1.25em', height: '1.25em', color: '#e0e0e0' }}>
                                     {element && React.createElement(element)}
                                 </Icon>
-                                <span>{elementName}</span>
+                                <div className={styles['object-info']}>
+                                    <span>
+                                        {elementName}
+                                    </span>
+                                    {(index !== 0) && <IconButton title="Move to Previous" onClick={() => moveObjectForward(obj.id)}>
+                                        <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
+                                            <MoveForward />
+                                        </Icon>
+                                    </IconButton>}
+                                    {(index !== (objects.length - 1)) && <IconButton title="Move to Next" onClick={() => moveObjectBehind(obj.id)}>
+                                        <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
+                                            <MoveBehind />
+                                        </Icon>
+                                    </IconButton>}
+                                </div>
                             </div>
                             {
                                 obj._objects && <ul className={styles.nested}>
@@ -73,7 +88,9 @@ const CanvasElements = ({ objects, activeObject, highlightObject }: { objects: a
                                                     <Icon style={{ width: '1.25em', height: '1.25em', color: '#e0e0e0' }}>
                                                         {element && React.createElement(element)}
                                                     </Icon>
-                                                    <span>{elementName}</span>
+                                                    <div className={styles['object-info']}>
+                                                        <span>{elementName}</span>
+                                                    </div>
                                                 </div>
                                             </li>
                                         })
