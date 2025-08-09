@@ -1,4 +1,5 @@
 .configurables {
+    min-width: 25em;
     margin: .5em 0;
     flex: 1;
 

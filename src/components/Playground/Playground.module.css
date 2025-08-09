@@ -1,10 +1,12 @@
 .component{
+    --dimension: 48em;
+
     flex: 2;
-    width: 48em;
-    min-width: 48em;
-    max-width: 48em;
-    height: 48em;
-    min-height: 48em;
+    aspect-ratio: 1 / 1;
+    width: var(--dimension);
+    max-width: var(--dimension);
+    height: auto;
+    align-self: center;
 
     border: 1px dashed #626262;
     --bg: #3a3a3a;
@@ -42,6 +44,12 @@
         border-radius: 1em;
         background:  #e0e0e0;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    }
+
+    @media (max-width: 1000px) {
+        &{
+            --dimension: 100%;
+        }
     }
 }
 

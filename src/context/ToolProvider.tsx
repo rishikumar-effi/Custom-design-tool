@@ -34,6 +34,7 @@ type ToolContextType = {
   exitEditingMode: () => void,
   moveObjectForward: (objectId: string) => void,
   moveObjectBehind: (objectId: string) => void,
+  editor: any,
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -384,7 +385,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     inEditingMode,
     exitEditingMode,
     moveObjectForward,
-    moveObjectBehind
+    moveObjectBehind,
+    editor
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;
