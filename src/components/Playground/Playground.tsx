@@ -22,7 +22,7 @@ const Playground = () => {
         handleResize();
 
         return () => window.removeEventListener('resize', handleResize);
-    }, [editor]);
+    }, [editor, onPlaygroundReady]);
 
     return <section className={styles.component}>
         <div className={styles['canvas-wrapper']} style={{ width: '100%', height: '100%' }}>
