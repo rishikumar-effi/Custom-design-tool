@@ -1,28 +1,27 @@
-import { useEffect } from 'react';
 import { useTool } from '../../context/ToolProvider';
 import styles from './Playground.module.css';
 import { FabricJSCanvas } from 'fabricjs-react';
 
 const Playground = () => {
-    const { onPlaygroundReady, inEditingMode, exitEditingMode, editor } = useTool();
+    const { onPlaygroundReady, inEditingMode, exitEditingMode} = useTool();
 
-    useEffect(() => {
-        const handleResize = () => {
-            if (editor?.canvas) {
-                const container = document.querySelector(`.${styles['canvas-wrapper']}`);
-                if (container) {
-                    editor.canvas.setWidth(container.clientWidth);
-                    editor.canvas.setHeight(container.clientHeight);
-                    editor.canvas.renderAll();
-                }
-            }
-        };
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         if (editor?.canvas) {
+    //             const container = document.querySelector(`.${styles['canvas-wrapper']}`);
+    //             if (container) {
+    //                 editor.canvas.setWidth(container.clientWidth);
+    //                 editor.canvas.setHeight(container.clientHeight);
+    //                 editor.canvas.renderAll();
+    //             }
+    //         }
+    //     };
 
-        window.addEventListener('resize', handleResize);
-        handleResize();
+    //     window.addEventListener('resize', handleResize);
+    //     handleResize();
 
-        return () => window.removeEventListener('resize', handleResize);
-    }, [editor, onPlaygroundReady]);
+    //     return () => window.removeEventListener('resize', handleResize);
+    // }, [editor, onPlaygroundReady]);
 
     return <section className={styles.component}>
         <div className={styles['canvas-wrapper']} style={{ width: '100%', height: '100%' }}>

@@ -47,7 +47,8 @@ const labelElement = (obj: any) => {
     return { element, elementName }
 }
 
-const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehind, moveObjectForward }: { objects: any, activeObject: any, highlightObject: any, moveObjectBehind: (objectId: string) => void, moveObjectForward: (objectId: string) => void }) => {
+const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehind, moveObjectForward}: { objects: any, activeObject: any, highlightObject: any, moveObjectBehind: (objectId: string) => void, moveObjectForward: (objectId: string) => void, frameId: string }) => {
+    
     return <div className={styles.component}>
         <fieldset>
             <legend>Element(s) in Canvas</legend>

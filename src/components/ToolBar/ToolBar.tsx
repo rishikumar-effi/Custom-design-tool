@@ -8,8 +8,10 @@ import { useCallback } from 'react';
 
 const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, GetSVG, FreeDraw } = ToolBarIcons;
 
-const downloadHandler = (svg: any) => {
-    if (!svg) return;
+const downloadHandler = async(exportSVGFn: any) => {
+    const svg = await exportSVGFn();
+
+    if(!svg) return;
 
     const blob = new Blob([svg], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
@@ -118,7 +120,7 @@ const ToolBar = () => {
         <ul>
             <li>
                 <label htmlFor="get-svg-code">
-                    <IconButton onClick={() => downloadHandler(exportAsSVG())} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
+                    <IconButton onClick={() => downloadHandler(exportAsSVG)} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
                         <Icon style={{ width: '80%', height: '80%' }}>
                             <GetSVG />
                         </Icon>

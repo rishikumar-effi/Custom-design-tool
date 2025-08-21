@@ -119,6 +119,6 @@ const carrierTemplate = `<svg width="427" height="650" viewBox="0 0 427 650" fil
   <text x="213.5" y="460" class="font bold gray text-center" font-size="20">
     +91 98765 43210
   </text>
-</svg>`
+</svg>`;
 
-export default [doctorTemplate, ecommerceTemplate, carrierTemplate]
+export default [doctorTemplate, ecommerceTemplate, carrierTemplate];

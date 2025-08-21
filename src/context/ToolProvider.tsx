@@ -4,11 +4,12 @@ import {
   createContext,
   useCallback,
   useContext,
+  useRef,
 } from "react";
 import { useFabricJSEditor } from "fabricjs-react";
 import { fabric } from 'fabric';
 
-type customFabricObject = fabric.Object & { id: string };
+type customFabricObject = fabric.Object & { id: string, label?: string };
 
 type customFabricGroup = fabric.Group & { id: string, label?: string };
 
@@ -26,7 +27,7 @@ type ToolContextType = {
   objects: fabric.Object[];
   activeObject: any;
   deleteSelected: () => void;
-  exportAsSVG: () => string | null;
+  exportAsSVG: () => void;
   highlightObject: (event: any, obj: any) => void;
   importSVG: (svgString: string) => void;
   addBrush: () => void,
@@ -35,7 +36,10 @@ type ToolContextType = {
   moveObjectForward: (objectId: string) => void,
   moveObjectBehind: (objectId: string) => void,
   editor: any,
+  frameId: string
 };
+
+const SCALE_TO = .6;
 
 export const ToolContext = createContext<ToolContextType | null>(null);
 
@@ -46,6 +50,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
+  const { current: frameId } = useRef<string>(crypto.randomUUID());
 
   const exitEditingMode = useCallback(() => {
     setIsEditingMode(false);
@@ -78,7 +83,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-    const center = editor.canvas.getCenter();
+    // const center = editor.canvas.getCenter();
 
     svgDoc.querySelectorAll('image').forEach((img) => {
       const href = img.getAttribute('href') || img.getAttribute('xlink:href');
@@ -91,7 +96,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const serializer = new XMLSerializer();
     const fixedSVGString = serializer.serializeToString(svgDoc);
 
-    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[]) => {
+    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[], options) => {
       if (!objects?.length) return;
 
       const newObjs = objects.map((object: any) => {
@@ -109,19 +114,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
         return object;
       });
 
-      const group = new fabric.Group(newObjs) as customFabricGroup;
-
-      const scaleTo = .5;
-
-      group.scale(scaleTo);
-      group.set({
-        label: 'Template', id: crypto.randomUUID(), left: center.left - (group.getScaledWidth() / 2),
-        top: center.top - (group.getScaledHeight() / 2),
-        subTargetCheck: true
-      });
-      group.setCoords();
-      editor.canvas.add(group);
-      editor.canvas.setActiveObject(group);
+      renderFrameAndObjects(editor.canvas, newObjs, options.width, options.height);
     });
   }, [editor]);
 
@@ -238,15 +231,68 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
   const clearAll = useCallback(() => {
     if (!editor) return;
-    editor.canvas.clear();
+    const canvas = editor.canvas;
+
+    const frameObject: any = canvas.getObjects().filter((object: any) => object.id === frameId);
+
+    canvas.clear();
+
+    canvas.add(...frameObject);
+
     setObjects([]);
     setActiveObject(null);
   }, [editor]);
 
-  const exportAsSVG = useCallback((): string | null => {
-    if (!editor) return null;
-    return editor.canvas.toSVG();
-  }, [editor]);
+  const exportAsSVG = useCallback(async () => {
+    if (!editor) return '';
+
+    const canvas = editor.canvas;
+    const canvasObjects = canvas.getObjects();
+
+    const frame = canvasObjects.find((object: any) => object.id === frameId);
+
+    if (!frame) return "";
+
+    const frameWidth = frame.width;
+    const frameHeight = frame.height;
+
+    const objects: any = canvasObjects.filter((object: any) => object.id !== frameId);
+
+    const clones = await Promise.all(
+      objects.map(
+        (object: any) =>
+          new Promise<fabric.Object>((resolve) =>
+            object.clone((cloned: fabric.Object) => resolve(cloned))
+          )
+      )
+    );
+
+    const tempGroup = new fabric.Group(clones, {
+      left: 0,
+      top: 0
+    });
+
+    tempGroup.scale(1 / SCALE_TO);
+
+    tempGroup.setCoords();
+
+    tempGroup.set({
+      left: 0,
+      top: 0,
+    });
+
+    tempGroup.setCoords();
+
+    const innerSVG = tempGroup.toSVG();
+
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${frameWidth}" height="${frameHeight}" viewBox="0 0 ${frameWidth} ${frameHeight}">${innerSVG}</svg>`.trim();
+
+    tempGroup.destroy();
+
+    return svg;
+
+  }, [editor, frameId]);
 
   const highlightObject = useCallback((event: any, obj: customFabricObject) => {
     if (!editor) return;
@@ -310,12 +356,74 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const renderFrameAndObjects = (canvas: any, svgObjects: any = null, width: number = 427, height: number = 650) => {
+    canvas.clear();
+
+    const frame = new fabric.Rect({
+      left: 0,
+      width,
+      height,
+      fill: 'rgba(255, 255, 255, .2)',
+      stroke: '#fff',
+      strokeDashArray: [5, 5],
+      selectable: false,
+      evented: false,
+      hasBorders: false,
+      hasControls: false,
+    }) as customFabricObject;
+
+    frame.scale(SCALE_TO);
+
+    const center = canvas.getCenter();
+
+    frame.set({
+      label: 'Frame', id: frameId, left: center.left - (frame.getScaledWidth() / 2),
+      top: center.top - (frame.getScaledHeight() / 2)
+    });
+
+    frame.setCoords();
+
+    canvas.add(frame);
+    canvas.sendToBack(frame);
+
+    const clipPath = new fabric.Rect({
+      left: center.left - (frame.getScaledWidth() / 2),
+      top: center.top - (frame.getScaledHeight() / 2),
+      width,
+      height,
+      absolutePositioned: true,
+    });
+
+    clipPath.scale(SCALE_TO);
+
+    canvas.clipPath = clipPath;
+
+    if (svgObjects) {
+      const group = new fabric.Group(svgObjects) as customFabricGroup;
+
+      group.scale(SCALE_TO);
+
+      group.set({
+        id: crypto.randomUUID(),
+        left: center.left - (group.getScaledWidth() / 2),
+        top: center.top - (group.getScaledHeight() / 2),
+        subTargetCheck: true
+      });
+
+      canvas.add(group);
+    }
+
+    canvas.renderAll();
+  }
+
   useEffect(() => {
     if (!editor) return;
     const canvas = editor.canvas;
 
     const updateObjects = () => {
-      setObjects(canvas.getObjects().slice());
+      const filteredObjects = canvas.getObjects().filter((object: any) => object.id !== frameId);
+
+      setObjects(filteredObjects.slice());
     };
 
     const updateSelection = () => {
@@ -344,6 +452,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       if (event.key !== 'Delete') return;
       deleteSelected();
     }
+
+    renderFrameAndObjects(canvas);
 
     document.addEventListener('keydown', deleteObjectsOnKeyDown);
     canvas.on('mouse:dblclick', selectingGroupObject);
@@ -386,7 +496,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     exitEditingMode,
     moveObjectForward,
     moveObjectBehind,
-    editor
+    editor,
+    frameId
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

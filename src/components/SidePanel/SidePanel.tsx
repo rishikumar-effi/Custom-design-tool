@@ -4,11 +4,11 @@ import Configurables from '../Configurables/Configurables';
 import CanvasElements from '../CanvasElements';
 
 const SidePanel = () => {
-    const { highlightObject, activeObject, objects, moveObjectBehind, moveObjectForward } = useTool();
+    const { highlightObject, activeObject, objects, moveObjectBehind, moveObjectForward, frameId} = useTool();
 
     return (<aside className={styles.component}>
         <Configurables activeObject={activeObject} />
-        <CanvasElements objects={objects} activeObject={activeObject} highlightObject={highlightObject} moveObjectBehind={moveObjectBehind} moveObjectForward={moveObjectForward}/>
+        <CanvasElements objects={objects} activeObject={activeObject} highlightObject={highlightObject} moveObjectBehind={moveObjectBehind} moveObjectForward={moveObjectForward} frameId={frameId}/>
     </aside>)
 }
 
