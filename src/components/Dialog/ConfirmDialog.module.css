@@ -1,0 +1,42 @@
+.dialog {
+    color: #e0e0e0;
+    width: 100%;
+    max-width: 90em;
+    min-width: 30em;
+    padding: 2em;
+    border-radius: inherit;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+
+    .dialog-cnts {
+        background: #2f2f2f;
+        padding: 1em 1.5em;
+        min-height: 8em;
+
+        p {
+            font-size: 1.6em;
+            font-weight: 300;
+        }
+    }
+
+    button {
+        padding: .6em 1.2em;
+        font-size: 1.2em;
+        border-radius: 2em;
+        font-weight: 400;
+        min-width: 7em;
+
+        &[data-btn-type='btn-primary'] {
+            background: linear-gradient(#fff, #e0e0e0);
+        }
+
+        &[data-btn-type='btn-secondary'] {
+            border: 1px solid #e0e0e0;
+            background: #2f2f2f;
+            color: #fff;
+        }
+    }
+
+}

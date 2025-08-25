@@ -255,6 +255,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     if (!frame) return "";
 
     const frameWidth = frame.width;
+
     const frameHeight = frame.height;
 
     const objects: any = canvasObjects.filter((object: any) => object.id !== frameId);
@@ -276,11 +277,6 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     tempGroup.scale(1 / SCALE_TO);
 
     tempGroup.setCoords();
-
-    tempGroup.set({
-      left: 0,
-      top: 0,
-    });
 
     tempGroup.setCoords();
 

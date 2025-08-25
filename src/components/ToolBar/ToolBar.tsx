@@ -4,6 +4,7 @@ import { ToolBarIcons, Icon } from '../Icons';
 import { useTool } from '../../context/ToolProvider';
 import { DownloadDialog, TemplateDialog, type TemplateDialogRef } from '../Dialog';
 import { useRef } from 'react';
+import { ConfirmDialog, type ConfirmDialogRef } from '../Dialog/ConfirmDialog';
 
 const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, Download, FreeDraw } = ToolBarIcons;
 
@@ -13,16 +14,18 @@ const ToolBar = () => {
     const noObjectsInCanvas = objects && objects.length === 0;
 
     const templateDialogRef = useRef<TemplateDialogRef>(null);
-
     const openTemplateDialog = () => templateDialogRef?.current?.open();
 
     const downloadDialogRef = useRef<TemplateDialogRef>(null);
-
     const openDownloadDialog = () => downloadDialogRef?.current?.open();
+
+    const confirmDialogRef = useRef<ConfirmDialogRef>(null);
+    const openConfirmDialog = () => confirmDialogRef?.current?.open();
 
     return <section className={styles.component}>
         <TemplateDialog importSVG={importSVG} ref={templateDialogRef} />
         <DownloadDialog ref={downloadDialogRef} exportAsSVG={exportAsSVG} exportAsPNG={exportAsPNG}/>
+        <ConfirmDialog ref={confirmDialogRef} clearAll={clearAll}/>
         <ul>
             <li>
                 <label htmlFor="draw-frame" title="Draw Frame">
@@ -96,7 +99,7 @@ const ToolBar = () => {
             </li>
             <li>
                 <label htmlFor="clear-all">
-                    <IconButton id="clear-all" onClick={clearAll} disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Clear All">
+                    <IconButton id="clear-all" onClick={openConfirmDialog} disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Clear All">
                         <Icon style={{ width: '80%', height: '80%' }}>
                             <ClearAll />
                         </Icon>
@@ -109,7 +112,7 @@ const ToolBar = () => {
             <li>
                 <label htmlFor="download">
                     <IconButton onClick={openDownloadDialog} id="download" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
-                        <Icon style={{ width: '90%', height: '90%' }}>
+                        <Icon style={{ width: '100%', height: '100%' }}>
                             <Download />
                         </Icon>
                     </IconButton>
