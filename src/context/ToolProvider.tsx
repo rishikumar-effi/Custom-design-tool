@@ -36,7 +36,8 @@ type ToolContextType = {
   moveObjectForward: (objectId: string) => void,
   moveObjectBehind: (objectId: string) => void,
   editor: any,
-  frameId: string
+  frameId: string,
+  exportAsPNG: () => void;
 };
 
 const SCALE_TO = .6;
@@ -294,6 +295,26 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
   }, [editor, frameId]);
 
+  const exportAsPNG = useCallback(async () => {
+    if (!editor) return '';
+
+    const canvas = editor.canvas;
+    const canvasObjects = canvas.getObjects();
+
+    const frame = canvasObjects.find((object: any) => object.id === frameId);
+
+    if (!frame) return "";
+
+    const { left, top, width, height } = frame.getBoundingRect();
+
+    const dataURL = canvas.toDataURL({
+      left, top, width, height, format: 'png', multiplier: 2
+    });
+
+    return dataURL;
+
+  }, [editor, frameId]);
+
   const highlightObject = useCallback((event: any, obj: customFabricObject) => {
     if (!editor) return;
     event.stopPropagation();
@@ -497,7 +518,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     moveObjectForward,
     moveObjectBehind,
     editor,
-    frameId
+    frameId,
+    exportAsPNG
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

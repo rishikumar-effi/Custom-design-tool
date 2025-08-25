@@ -2,43 +2,31 @@ import IconButton from '../IconButton';
 import styles from './ToolBar.module.css';
 import { ToolBarIcons, Icon } from '../Icons';
 import { useTool } from '../../context/ToolProvider';
-import useDialog from '../../hooks/useDialog';
-import { TemplateDialog } from '../Dialog';
-import { useCallback } from 'react';
+import { DownloadDialog, TemplateDialog, type TemplateDialogRef } from '../Dialog';
+import { useRef } from 'react';
 
-const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, GetSVG, FreeDraw } = ToolBarIcons;
-
-const downloadHandler = async(exportSVGFn: any) => {
-    const svg = await exportSVGFn();
-
-    if(!svg) return;
-
-    const blob = new Blob([svg], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "canvas-export.svg";
-    link.click();
-
-    URL.revokeObjectURL(url);
-};
+const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, Download, FreeDraw } = ToolBarIcons;
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, exportAsSVG, importSVG, addBrush, inEditingMode } = useTool();
-
-    const { Dialog, openDialog, closeDialog } = useDialog();
-
-    const addTemplateHandler = useCallback(() => openDialog(), []);
+    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, importSVG, addBrush, inEditingMode, exportAsSVG, exportAsPNG } = useTool();
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
+    const templateDialogRef = useRef<TemplateDialogRef>(null);
+
+    const openTemplateDialog = () => templateDialogRef?.current?.open();
+
+    const downloadDialogRef = useRef<TemplateDialogRef>(null);
+
+    const openDownloadDialog = () => downloadDialogRef?.current?.open();
+
     return <section className={styles.component}>
-        <Dialog><TemplateDialog importSVG={importSVG} closeDialog={closeDialog} /></Dialog>
+        <TemplateDialog importSVG={importSVG} ref={templateDialogRef} />
+        <DownloadDialog ref={downloadDialogRef} exportAsSVG={exportAsSVG} exportAsPNG={exportAsPNG}/>
         <ul>
             <li>
                 <label htmlFor="draw-frame" title="Draw Frame">
-                    <IconButton onClick={addTemplateHandler} id="draw-frame" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconButton onClick={openTemplateDialog} id="draw-frame" style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon style={{ width: '80%', height: '80%' }}>
                             <DrawFrame />
                         </Icon>
@@ -119,13 +107,13 @@ const ToolBar = () => {
         </ul>
         <ul>
             <li>
-                <label htmlFor="get-svg-code">
-                    <IconButton onClick={() => downloadHandler(exportAsSVG)} id="get-svg-code" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
-                        <Icon style={{ width: '80%', height: '80%' }}>
-                            <GetSVG />
+                <label htmlFor="download">
+                    <IconButton onClick={openDownloadDialog} id="download" disabled={noObjectsInCanvas} style={{ width: '3em', height: "3em", padding: '.25em', color: 'rgb(30,32,34)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Export as SVG">
+                        <Icon style={{ width: '90%', height: '90%' }}>
+                            <Download />
                         </Icon>
                     </IconButton>
-                    <span>Get SVG</span>
+                    <span>Download</span>
                 </label>
             </li>
         </ul>

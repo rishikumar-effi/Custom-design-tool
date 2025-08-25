@@ -31,10 +31,10 @@ const useDialog = () => {
 
         if (!rootElement || !isDialogOpen) return null;
 
-        return createPortal(<dialog onClick={(event)=> event.target === dialogRef.current &&  closeDialog()} ref={dialogRef}><section onClick={(e) => e.stopPropagation}>{children}</section></dialog>, rootElement);
+        return createPortal(<dialog onClick={(event)=> event.target === dialogRef.current &&  closeDialog()} ref={dialogRef}><section onClick={(e) => e.stopPropagation()}>{children}</section></dialog>, rootElement);
     }
 
-    return { openDialog, closeDialog, Dialog }
+    return { openDialog, closeDialog, Dialog, isDialogOpen }
 }
 
 export default useDialog;
