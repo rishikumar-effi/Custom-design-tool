@@ -299,11 +299,11 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const frame = canvasObjects.find((object: any) => object.id === frameId);
 
     if (!frame) return "";
-    
+
     const { left, top, width, height } = frame.getBoundingRect();
 
     const dataURL = canvas.toDataURL({
-      left, top, width, height, format: 'png', multiplier: 2
+      left, top, width, height, format: 'png', multiplier: 1 / SCALE_TO
     });
 
     return dataURL;
