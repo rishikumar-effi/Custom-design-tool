@@ -125,7 +125,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       radius: 30,
       fill: color,
       stroke: "#1e2022",
-      strokeWidth: 1,
+      strokeWidth: 0,
     });
     objectProps(circle);
   }, [editor, color]);
@@ -139,7 +139,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       left: 100,
       top: 100,
       stroke: "#1e2022",
-      strokeWidth: 1,
+      strokeWidth: 0,
     });
     objectProps(rect);
   }, [editor, color]);
@@ -202,10 +202,11 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const activeObjectType = canvas.getActiveObject()?.type;
 
     if (activeObjects.length) {
-      activeObjects.forEach((obj: fabric.Object) => {
+      activeObjects.forEach((obj: any) => {
         const isBelongsToGroup = obj.hasOwnProperty('group') && activeObjectType && activeObjectType !== 'activeSelection';
+        const isFrame = obj.id === frameId;
 
-        !isBelongsToGroup && canvas.remove(obj);
+        (!isBelongsToGroup && !isFrame) && canvas.remove(obj);
 
         if (isBelongsToGroup) {
           const group = obj.group as customFabricGroup;
@@ -254,11 +255,11 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (!frame) return "";
 
-    const frameWidth = frame.width;
+    const { width: frameWidth, height: frameHeight } = frame;
 
-    const frameHeight = frame.height;
+    // const objects: any = canvasObjects.filter((object: any) => object.id !== frameId);
 
-    const objects: any = canvasObjects.filter((object: any) => object.id !== frameId);
+    const objects: any = canvasObjects;
 
     const clones = await Promise.all(
       objects.map(
@@ -275,8 +276,6 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     tempGroup.scale(1 / SCALE_TO);
-
-    tempGroup.setCoords();
 
     tempGroup.setCoords();
 
@@ -300,7 +299,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const frame = canvasObjects.find((object: any) => object.id === frameId);
 
     if (!frame) return "";
-
+    
     const { left, top, width, height } = frame.getBoundingRect();
 
     const dataURL = canvas.toDataURL({
@@ -380,14 +379,15 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       left: 0,
       width,
       height,
-      fill: 'rgba(255, 255, 255, .2)',
-      stroke: '#fff',
-      strokeDashArray: [5, 5],
+      fill: '#e0e0e0',
       selectable: false,
       evented: false,
       hasBorders: false,
       hasControls: false,
+      rx: 10,
+      ry: 10
     }) as customFabricObject;
+    (frame as any).label = 'Frame';
 
     frame.scale(SCALE_TO);
 
@@ -438,9 +438,9 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const canvas = editor.canvas;
 
     const updateObjects = () => {
-      const filteredObjects = canvas.getObjects().filter((object: any) => object.id !== frameId);
+      // const filteredObjects = canvas.getObjects().filter((object: any) => object.id !== frameId);
 
-      setObjects(filteredObjects.slice());
+      setObjects(canvas.getObjects().slice());
     };
 
     const updateSelection = () => {

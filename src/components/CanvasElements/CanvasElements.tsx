@@ -16,7 +16,7 @@ const labelElement = (obj: any) => {
             break;
         case 'rect':
             element = DrawRectangle;
-            elementName = "Rectangle";
+            elementName = obj.label || "Rectangle";
             break;
         case 'textbox':
         case 'text':
@@ -47,7 +47,7 @@ const labelElement = (obj: any) => {
     return { element, elementName }
 }
 
-const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehind, moveObjectForward}: { objects: any, activeObject: any, highlightObject: any, moveObjectBehind: (objectId: string) => void, moveObjectForward: (objectId: string) => void, frameId: string }) => {
+const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehind, moveObjectForward, frameId}: { objects: any, activeObject: any, highlightObject: any, moveObjectBehind: (objectId: string) => void, moveObjectForward: (objectId: string) => void, frameId: string }) => {
     
     return <div className={styles.component}>
         <fieldset>
@@ -56,7 +56,7 @@ const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehi
                 {
                     objects.map((obj: any, index: number) => {
                         const { element, elementName } = labelElement(obj);
-
+                        
                         return <li className={styles.object} key={obj.id} data-focused={activeObject && activeObject.id === obj.id} onClick={(event) => highlightObject(event, obj)}>
                             <div className={styles['object-props']}>
                                 <Icon style={{ width: '1.25em', height: '1.25em', color: '#e0e0e0' }}>
@@ -67,12 +67,12 @@ const CanvasElements = ({ objects, activeObject, highlightObject, moveObjectBehi
                                         {elementName}
                                     </span>
                                     <div>
-                                        {(index !== 0) && <IconButton title="Move Backward" onClick={() => moveObjectForward(obj.id)}>
+                                        {(index !== 0 && obj.id !== frameId) && <IconButton title="Move Backward" onClick={() => moveObjectForward(obj.id)}>
                                             <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
                                                 <MoveForward />
                                             </Icon>
                                         </IconButton>}
-                                        {(index !== (objects.length - 1)) && <IconButton title="Move Forward" onClick={() => moveObjectBehind(obj.id)}>
+                                        {(index !== (objects.length - 1)  && obj.id !== frameId) && <IconButton title="Move Forward" onClick={() => moveObjectBehind(obj.id)}>
                                             <Icon style={{ width: '1em', height: '1em', color: '#e0e0e0' }}>
                                                 <MoveBehind />
                                             </Icon>
