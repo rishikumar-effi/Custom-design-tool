@@ -245,6 +245,71 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     setActiveObject(null);
   }, [editor]);
 
+  // const exportAsSVG = useCallback(async () => {
+  //   if (!editor) return '';
+
+  //   const canvas = editor.canvas;
+  //   const canvasObjects = canvas.getObjects();
+
+  //   const frame = canvasObjects.find((object: any) => object.id === frameId);
+
+  //   if (!frame) return "";
+
+  //   const { width: frameWidth, height: frameHeight } = frame;
+
+  //   const objects: any = canvasObjects;
+
+  //   const clones = await Promise.all(
+  //     objects.map(
+  //       (object: any) =>
+  //         new Promise<fabric.Object>((resolve) =>
+  //           object.clone((cloned: customFabricObject) => {
+  //             cloned.set('id', object.id);
+  //             return resolve(cloned);
+  //           })
+  //         )
+  //     )
+  //   );
+
+  //   const tempGroup = new fabric.Group(clones, {
+  //     left: 0,
+  //     top: 0
+  //   });
+
+  //   tempGroup.scale(1 / SCALE_TO);
+
+  //   tempGroup.setCoords();
+
+  //   let viewPortX = 0;
+  //   let viewPortY = 0;
+
+  //   requestAnimationFrame(() => {
+  //     const resizedFrame = tempGroup._objects.find((object: any) => object.id === frameId);
+
+  //     if (resizedFrame) {
+  //       const { left, top } = resizedFrame;
+
+  //       viewPortX = Math.abs(left) < 1e-10 ? 0 : left;
+  //       viewPortY = Math.abs(top) < 1e-10 ? 0 : top;
+
+  //       console.log(viewPortX, viewPortY); // here im getting proper value
+  //     }
+  //   });
+
+  //   console.log(viewPortX, viewPortY); // But here its still 0, 0
+
+  //   const innerSVG = tempGroup.toSVG();
+
+  //   const svg =
+  //     `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${frameWidth}" height="${frameHeight}" viewBox="${viewPortX} ${viewPortY} ${frameWidth} ${frameHeight}">${innerSVG}</svg>`.trim();
+
+  //   tempGroup.destroy();
+
+  //   return svg;
+
+
+  // }, [editor, frameId]);
+
   const exportAsSVG = useCallback(async () => {
     if (!editor) return '';
 
@@ -257,15 +322,16 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     const { width: frameWidth, height: frameHeight } = frame;
 
-    // const objects: any = canvasObjects.filter((object: any) => object.id !== frameId);
-
     const objects: any = canvasObjects;
 
     const clones = await Promise.all(
       objects.map(
         (object: any) =>
           new Promise<fabric.Object>((resolve) =>
-            object.clone((cloned: fabric.Object) => resolve(cloned))
+            object.clone((cloned: customFabricObject) => {
+              cloned.set('id', object.id);
+              return resolve(cloned);
+            })
           )
       )
     );
@@ -279,14 +345,33 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     tempGroup.setCoords();
 
+    let viewPortX = 0;
+    let viewPortY = 0;
+
+    requestAnimationFrame(() => {
+      const resizedFrame = tempGroup._objects.find((object: any) => object.id === frameId);
+
+      if (resizedFrame) {
+        const { left, top } = resizedFrame;
+
+        viewPortX = Math.abs(left) < 1e-10 ? 0 : left;
+        viewPortY = Math.abs(top) < 1e-10 ? 0 : top;
+
+        console.log(viewPortX, viewPortY); // here im getting proper value
+      }
+    });
+
+    console.log(viewPortX, viewPortY); // But here its still 0, 0
+
     const innerSVG = tempGroup.toSVG();
 
     const svg =
-      `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${frameWidth}" height="${frameHeight}" viewBox="0 0 ${frameWidth} ${frameHeight}">${innerSVG}</svg>`.trim();
+      `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${frameWidth}" height="${frameHeight}" viewBox="${viewPortX} ${viewPortY} ${frameWidth} ${frameHeight}">${innerSVG}</svg>`.trim();
 
     tempGroup.destroy();
 
     return svg;
+
 
   }, [editor, frameId]);
 
