@@ -5,7 +5,10 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 1em;
-    max-width: 20em;
+
+    width: 100%;
+    max-width: 18em;
+    min-width: 18em;
 
     &>ul {
         display: flex;
@@ -104,7 +107,8 @@
     @media (max-width: 1000px) {
         & {
             width: 100%;
-            max-width: unset;
+            min-width: unset !important;
+            max-width: unset !important;
             flex: unset;
             flex-direction: row;
 

@@ -2,9 +2,9 @@
     --dimension: 48em;
 
     flex: 2;
-    aspect-ratio: 1 / 1;
-    width: var(--dimension);
+    width: 100%;
     max-width: var(--dimension);
+    padding: 1em 2em;
     height: auto;
 
     display: flex;
