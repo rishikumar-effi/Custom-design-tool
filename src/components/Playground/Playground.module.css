@@ -6,7 +6,10 @@
     width: var(--dimension);
     max-width: var(--dimension);
     height: auto;
-    align-self: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     border: 1px dashed #626262;
     --bg: #3a3a3a;
@@ -54,6 +57,9 @@
 }
 
 .canvas-wrapper{
+    width: calc((var(--width)/100) * (var(--scaleTo) * 100));
+    height: calc((var(--height)/100) * (var(--scaleTo) * 100));
+
     & div,
     & canvas{
         width: 100% !important;

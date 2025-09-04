@@ -37,10 +37,9 @@ type ToolContextType = {
   moveObjectBehind: (objectId: string) => void,
   editor: any,
   frameId: string,
-  exportAsPNG: () => void;
+  exportAsPNG: () => void,
+  scaleTo: number
 };
-
-const SCALE_TO = .6;
 
 export const ToolContext = createContext<ToolContextType | null>(null);
 
@@ -52,6 +51,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
   const { current: frameId } = useRef<string>(crypto.randomUUID());
+
+  const {current: scaleTo} = useRef(.6);
 
   const exitEditingMode = useCallback(() => {
     setIsEditingMode(false);
@@ -97,7 +98,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const serializer = new XMLSerializer();
     const fixedSVGString = serializer.serializeToString(svgDoc);
 
-    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[], options) => {
+    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[]) => {
       if (!objects?.length) return;
 
       const newObjs = objects.map((object: any) => {
@@ -115,7 +116,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
         return object;
       });
 
-      renderFrameAndObjects(editor.canvas, newObjs, options.width, options.height);
+      renderFrameAndObjects(editor.canvas, newObjs);
     });
   }, [editor]);
 
@@ -204,9 +205,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     if (activeObjects.length) {
       activeObjects.forEach((obj: any) => {
         const isBelongsToGroup = obj.hasOwnProperty('group') && activeObjectType && activeObjectType !== 'activeSelection';
-        const isFrame = obj.id === frameId;
 
-        (!isBelongsToGroup && !isFrame) && canvas.remove(obj);
+        (!isBelongsToGroup) && canvas.remove(obj);
 
         if (isBelongsToGroup) {
           const group = obj.group as customFabricGroup;
@@ -245,151 +245,48 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     setActiveObject(null);
   }, [editor]);
 
-  // const exportAsSVG = useCallback(async () => {
-  //   if (!editor) return '';
-
-  //   const canvas = editor.canvas;
-  //   const canvasObjects = canvas.getObjects();
-
-  //   const frame = canvasObjects.find((object: any) => object.id === frameId);
-
-  //   if (!frame) return "";
-
-  //   const { width: frameWidth, height: frameHeight } = frame;
-
-  //   const objects: any = canvasObjects;
-
-  //   const clones = await Promise.all(
-  //     objects.map(
-  //       (object: any) =>
-  //         new Promise<fabric.Object>((resolve) =>
-  //           object.clone((cloned: customFabricObject) => {
-  //             cloned.set('id', object.id);
-  //             return resolve(cloned);
-  //           })
-  //         )
-  //     )
-  //   );
-
-  //   const tempGroup = new fabric.Group(clones, {
-  //     left: 0,
-  //     top: 0
-  //   });
-
-  //   tempGroup.scale(1 / SCALE_TO);
-
-  //   tempGroup.setCoords();
-
-  //   let viewPortX = 0;
-  //   let viewPortY = 0;
-
-  //   requestAnimationFrame(() => {
-  //     const resizedFrame = tempGroup._objects.find((object: any) => object.id === frameId);
-
-  //     if (resizedFrame) {
-  //       const { left, top } = resizedFrame;
-
-  //       viewPortX = Math.abs(left) < 1e-10 ? 0 : left;
-  //       viewPortY = Math.abs(top) < 1e-10 ? 0 : top;
-
-  //       console.log(viewPortX, viewPortY); // here im getting proper value
-  //     }
-  //   });
-
-  //   console.log(viewPortX, viewPortY); // But here its still 0, 0
-
-  //   const innerSVG = tempGroup.toSVG();
-
-  //   const svg =
-  //     `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${frameWidth}" height="${frameHeight}" viewBox="${viewPortX} ${viewPortY} ${frameWidth} ${frameHeight}">${innerSVG}</svg>`.trim();
-
-  //   tempGroup.destroy();
-
-  //   return svg;
-
-
-  // }, [editor, frameId]);
 
   const exportAsSVG = useCallback(async () => {
     if (!editor) return '';
 
     const canvas = editor.canvas;
-    const canvasObjects = canvas.getObjects();
 
-    const frame = canvasObjects.find((object: any) => object.id === frameId);
+    const currentZoom = canvas.getZoom();
 
-    if (!frame) return "";
+    canvas.setZoom(1);
+    canvas.renderAll();
 
-    const { width: frameWidth, height: frameHeight } = frame;
-
-    const objects: any = canvasObjects;
-
-    const clones = await Promise.all(
-      objects.map(
-        (object: any) =>
-          new Promise<fabric.Object>((resolve) =>
-            object.clone((cloned: customFabricObject) => {
-              cloned.set('id', object.id);
-              return resolve(cloned);
-            })
-          )
-      )
-    );
-
-    const tempGroup = new fabric.Group(clones, {
-      left: 0,
-      top: 0
-    });
-
-    tempGroup.scale(1 / SCALE_TO);
-
-    tempGroup.setCoords();
-
-    let viewPortX = 0;
-    let viewPortY = 0;
-
-    requestAnimationFrame(() => {
-      const resizedFrame = tempGroup._objects.find((object: any) => object.id === frameId);
-
-      if (resizedFrame) {
-        const { left, top } = resizedFrame;
-
-        viewPortX = Math.abs(left) < 1e-10 ? 0 : left;
-        viewPortY = Math.abs(top) < 1e-10 ? 0 : top;
-
-        console.log(viewPortX, viewPortY); // here im getting proper value
+    const svg = canvas.toSVG({
+      width: 427,
+      height: 650,
+      viewBox: {
+        x: 0,
+        y: 0,
+        width: 427,
+        height: 650
       }
     });
-
-    console.log(viewPortX, viewPortY); // But here its still 0, 0
-
-    const innerSVG = tempGroup.toSVG();
-
-    const svg =
-      `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${frameWidth}" height="${frameHeight}" viewBox="${viewPortX} ${viewPortY} ${frameWidth} ${frameHeight}">${innerSVG}</svg>`.trim();
-
-    tempGroup.destroy();
+    canvas.setZoom(currentZoom);
+    canvas.renderAll();
 
     return svg;
-
-
   }, [editor, frameId]);
 
   const exportAsPNG = useCallback(async () => {
     if (!editor) return '';
 
     const canvas = editor.canvas;
-    const canvasObjects = canvas.getObjects();
 
-    const frame = canvasObjects.find((object: any) => object.id === frameId);
+    const currentZoom = canvas.getZoom();
 
-    if (!frame) return "";
-
-    const { left, top, width, height } = frame.getBoundingRect();
+    canvas.setZoom(1);
 
     const dataURL = canvas.toDataURL({
-      left, top, width, height, format: 'png', multiplier: 1 / SCALE_TO
+      width: 427, height: 650,
+      format: 'png', multiplier: 1
     });
+
+    canvas.setZoom(currentZoom);
 
     return dataURL;
 
@@ -457,13 +354,17 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const renderFrameAndObjects = (canvas: any, svgObjects: any = null, width: number = 427, height: number = 650) => {
+  const renderFrameAndObjects = (canvas: any, svgObjects: any = null) => {
     canvas.clear();
+
+    const frameWidth = 427;
+    const frameHeight = 650;
 
     const frame = new fabric.Rect({
       left: 0,
-      width,
-      height,
+      top: 0,
+      width: frameWidth,
+      height: frameHeight,
       fill: '#e0e0e0',
       selectable: false,
       evented: false,
@@ -474,46 +375,15 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     }) as customFabricObject;
     (frame as any).label = 'Frame';
 
-    frame.scale(SCALE_TO);
-
-    const center = canvas.getCenter();
-
-    frame.set({
-      label: 'Frame', id: frameId, left: center.left - (frame.getScaledWidth() / 2),
-      top: center.top - (frame.getScaledHeight() / 2)
-    });
-
-    frame.setCoords();
+    frame.set({ id: frameId });
 
     canvas.add(frame);
-    canvas.sendToBack(frame);
 
-    const clipPath = new fabric.Rect({
-      left: center.left - (frame.getScaledWidth() / 2),
-      top: center.top - (frame.getScaledHeight() / 2),
-      width,
-      height,
-      absolutePositioned: true,
-    });
-
-    clipPath.scale(SCALE_TO);
-
-    canvas.clipPath = clipPath;
-
-    if (svgObjects) {
-      const group = new fabric.Group(svgObjects) as customFabricGroup;
-
-      group.scale(SCALE_TO);
-
-      group.set({
-        id: crypto.randomUUID(),
-        left: center.left - (group.getScaledWidth() / 2),
-        top: center.top - (group.getScaledHeight() / 2),
-        subTargetCheck: true
-      });
-
-      canvas.add(group);
+    if (svgObjects && svgObjects.length > 0) {
+      svgObjects.map((svgObject: customFabricObject) => canvas.add(svgObject));
     }
+
+    canvas.setZoom(scaleTo);
 
     canvas.renderAll();
   }
@@ -600,7 +470,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     moveObjectBehind,
     editor,
     frameId,
-    exportAsPNG
+    exportAsPNG,
+    scaleTo,
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;
