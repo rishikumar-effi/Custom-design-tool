@@ -59,6 +59,7 @@
 .canvas-wrapper{
     width: calc((var(--width)/100) * (var(--scaleTo) * 100));
     height: calc((var(--height)/100) * (var(--scaleTo) * 100));
+    border: 1px dashed #e0e0e0;
 
     & div,
     & canvas{

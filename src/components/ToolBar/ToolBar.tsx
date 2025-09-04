@@ -9,7 +9,7 @@ import { ConfirmDialog, type ConfirmDialogRef } from '../Dialog/ConfirmDialog';
 const { DrawFrame, DrawCircle, DrawRectangle, DrawLine, AddText, Delete, ClearAll, Download, FreeDraw } = ToolBarIcons;
 
 const ToolBar = () => {
-    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, importSVG, addBrush, inEditingMode, exportAsSVG, exportAsPNG } = useTool();
+    const { addCircle, addRectangle, addLine, addText, activeObject, objects, clearAll, deleteSelected, importSVG, addBrush, inEditingMode, exportAsSVG, exportAsPNG, canvasDimension, scaleTo } = useTool();
 
     const noObjectsInCanvas = objects && objects.length === 0;
 
@@ -24,7 +24,7 @@ const ToolBar = () => {
 
     return <section className={styles.component}>
         <TemplateDialog importSVG={importSVG} ref={templateDialogRef} />
-        <DownloadDialog ref={downloadDialogRef} exportAsSVG={exportAsSVG} exportAsPNG={exportAsPNG}/>
+        <DownloadDialog ref={downloadDialogRef} exportAsSVG={exportAsSVG} exportAsPNG={exportAsPNG} canvasDimension={canvasDimension} scaleTo={scaleTo}/>
         <ConfirmDialog ref={confirmDialogRef} clearAll={clearAll}/>
         <ul>
             <li>

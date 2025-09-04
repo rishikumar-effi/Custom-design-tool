@@ -1,3 +1,9 @@
+const blankTemplate = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="427" height="650" viewBox="0 0 427 650" xml:space="preserve">
+<g transform="matrix(1 0 0 1 214 325.5)" id="f38e68be-a759-4734-8881-94da2f494d6d">
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(224,224,224); fill-rule: nonzero; opacity: 1;" x="-213.5" y="-325" rx="10" ry="10" width="427" height="650"/>
+</g>
+</svg>`;
+
 const doctorTemplate = `<svg width="427" height="650" viewBox="0 0 427 650" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <rect width="427" height="650" rx="15" fill="white"></rect>
   <text id="doctor_name" x="213.5" y="360.12" text-anchor="middle" fill="#355799" font-family="Jost" font-size="32" font-weight="600">Dr. Rajesh Kumar</text>
@@ -121,4 +127,4 @@ const carrierTemplate = `<svg width="427" height="650" viewBox="0 0 427 650" fil
   </text>
 </svg>`;
 
-export default [doctorTemplate, ecommerceTemplate, carrierTemplate];
+export default [blankTemplate, doctorTemplate, ecommerceTemplate, carrierTemplate];

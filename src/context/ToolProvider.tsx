@@ -36,9 +36,9 @@ type ToolContextType = {
   moveObjectForward: (objectId: string) => void,
   moveObjectBehind: (objectId: string) => void,
   editor: any,
-  frameId: string,
   exportAsPNG: () => void,
-  scaleTo: number
+  scaleTo: number,
+  canvasDimension: {width: number, height: number}
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -50,7 +50,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
-  const { current: frameId } = useRef<string>(crypto.randomUUID());
+  const [canvasDimension, setCanvasDimension]= useState({width: 427, height: 650});
 
   const {current: scaleTo} = useRef(.6);
 
@@ -85,7 +85,6 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-    // const center = editor.canvas.getCenter();
 
     svgDoc.querySelectorAll('image').forEach((img) => {
       const href = img.getAttribute('href') || img.getAttribute('xlink:href');
@@ -98,8 +97,10 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const serializer = new XMLSerializer();
     const fixedSVGString = serializer.serializeToString(svgDoc);
 
-    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[]) => {
+    fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[], options: any) => {
       if (!objects?.length) return;
+
+      setCanvasDimension({width: options.width, height: options.height});
 
       const newObjs = objects.map((object: any) => {
         object.set({ id: crypto.randomUUID() });
@@ -235,11 +236,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     if (!editor) return;
     const canvas = editor.canvas;
 
-    const frameObject: any = canvas.getObjects().filter((object: any) => object.id === frameId);
-
     canvas.clear();
-
-    canvas.add(...frameObject);
 
     setObjects([]);
     setActiveObject(null);
@@ -270,7 +267,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     canvas.renderAll();
 
     return svg;
-  }, [editor, frameId]);
+  }, [editor]);
 
   const exportAsPNG = useCallback(async () => {
     if (!editor) return '';
@@ -290,7 +287,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
 
     return dataURL;
 
-  }, [editor, frameId]);
+  }, [editor]);
 
   const highlightObject = useCallback((event: any, obj: customFabricObject) => {
     if (!editor) return;
@@ -357,28 +354,6 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const renderFrameAndObjects = (canvas: any, svgObjects: any = null) => {
     canvas.clear();
 
-    const frameWidth = 427;
-    const frameHeight = 650;
-
-    const frame = new fabric.Rect({
-      left: 0,
-      top: 0,
-      width: frameWidth,
-      height: frameHeight,
-      fill: '#e0e0e0',
-      selectable: false,
-      evented: false,
-      hasBorders: false,
-      hasControls: false,
-      rx: 10,
-      ry: 10
-    }) as customFabricObject;
-    (frame as any).label = 'Frame';
-
-    frame.set({ id: frameId });
-
-    canvas.add(frame);
-
     if (svgObjects && svgObjects.length > 0) {
       svgObjects.map((svgObject: customFabricObject) => canvas.add(svgObject));
     }
@@ -393,8 +368,6 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     const canvas = editor.canvas;
 
     const updateObjects = () => {
-      // const filteredObjects = canvas.getObjects().filter((object: any) => object.id !== frameId);
-
       setObjects(canvas.getObjects().slice());
     };
 
@@ -469,9 +442,9 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     moveObjectForward,
     moveObjectBehind,
     editor,
-    frameId,
     exportAsPNG,
     scaleTo,
+    canvasDimension
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

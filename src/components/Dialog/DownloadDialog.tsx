@@ -5,8 +5,10 @@ import styles from './DownloadDialog.module.css'
 export type DownloadDialogRef = { open: () => void };
 
 type DownloadDialogProps = {
-    exportAsSVG: () => any;
-    exportAsPNG: () => any;
+    exportAsSVG: () => any,
+    exportAsPNG: () => any,
+    canvasDimension: {width: number, height: number},
+    scaleTo: number
 }
 
 const createDownloadLink = (data: string, type: "png" | "svg") => {
@@ -27,7 +29,7 @@ const downloadAsSVG = (svg: string) => {
     URL.revokeObjectURL(url);
 };
 
-export const DownloadDialog = forwardRef<DownloadDialogRef, DownloadDialogProps>(({ exportAsSVG, exportAsPNG }, ref) => {
+export const DownloadDialog = forwardRef<DownloadDialogRef, DownloadDialogProps>(({ exportAsSVG, exportAsPNG, canvasDimension, scaleTo }, ref) => {
     const { Dialog, openDialog, isDialogOpen, closeDialog } = useDialog();
 
     const [isSVGSelected, setIsSVGSelected] = useState<boolean>(true);
@@ -64,7 +66,7 @@ export const DownloadDialog = forwardRef<DownloadDialogRef, DownloadDialogProps>
             <section className={styles.dialog}>
                 <h2>Download as</h2>
                 <article className={styles['preview-container']}>
-                    <div style={{ width: '256px', height: '390px', border: '1px dashed #e0e0e0', borderRadius: '.5em' }} dangerouslySetInnerHTML={{ __html: svgData }}></div>
+                    <div style={{ '--width': `${canvasDimension.width}px`, '--height': `${canvasDimension.height}px`, border: '1px dashed #e0e0e0', borderRadius: '.5em', '--scaleTo': scaleTo } as React.CSSProperties} dangerouslySetInnerHTML={{ __html: svgData }}></div>
                     <div className={styles['preview-config']}>
                         <fieldset>
                             <legend>Download the image as</legend>
