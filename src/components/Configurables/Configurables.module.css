@@ -117,5 +117,12 @@
             height: 0;
             visibility: none;
         }
+
+        button{
+            padding: .5em;
+            border-radius: .5em;
+            background: linear-gradient(#fff, #e0e0e0);
+            font-weight: 700;
+        }
     }
 }

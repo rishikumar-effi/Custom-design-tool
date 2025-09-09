@@ -38,7 +38,8 @@ type ToolContextType = {
   editor: any,
   exportAsPNG: () => void,
   scaleTo: number,
-  canvasDimension: {width: number, height: number}
+  canvasDimension: { width: number, height: number },
+  deSelectAll: () => void,
 };
 
 export const ToolContext = createContext<ToolContextType | null>(null);
@@ -50,9 +51,20 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
   const [objects, setObjects] = useState<fabric.Object[]>([]);
   const [activeObject, setActiveObject] = useState<fabric.Object | null>(null);
   const [inEditingMode, setIsEditingMode] = useState<boolean>(false);
-  const [canvasDimension, setCanvasDimension]= useState({width: 427, height: 650});
+  const [canvasDimension, setCanvasDimension] = useState({ width: 427, height: 650 });
 
-  const {current: scaleTo} = useRef(.6);
+  const { current: scaleTo } = useRef(.6);
+
+  const deSelectAll = useCallback(() => {
+    const canvas = editor?.canvas;
+
+    const hasActiveObject = canvas?.getActiveObject();
+
+    if (canvas && hasActiveObject) {
+      canvas.discardActiveObject();
+      canvas.requestRenderAll();
+    }
+  },[editor]);
 
   const exitEditingMode = useCallback(() => {
     setIsEditingMode(false);
@@ -100,7 +112,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     fabric.loadSVGFromString(fixedSVGString, (objects: fabric.Object[], options: any) => {
       if (!objects?.length) return;
 
-      setCanvasDimension({width: options.width, height: options.height});
+      setCanvasDimension({ width: options.width, height: options.height });
 
       const newObjs = objects.map((object: any) => {
         object.set({ id: crypto.randomUUID() });
@@ -444,7 +456,8 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     editor,
     exportAsPNG,
     scaleTo,
-    canvasDimension
+    canvasDimension,
+    deSelectAll,
   };
 
   return <ToolContext.Provider value={values}>{children}</ToolContext.Provider>;

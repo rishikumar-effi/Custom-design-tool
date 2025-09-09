@@ -12,7 +12,7 @@ const labelElement = (obj: any) => {
     switch (label) {
         case 'circle':
             element = DrawCircle;
-            elementName = "Circle";
+            elementName = obj.label || "Circle";
             break;
         case 'rect':
             element = DrawRectangle;
@@ -29,7 +29,7 @@ const labelElement = (obj: any) => {
             break;
         case 'image':
             element = Image;
-            elementName = "Image";
+            elementName = obj.label || "Image";
             break;
         case 'line':
             element = DrawLine;

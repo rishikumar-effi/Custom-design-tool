@@ -3,12 +3,12 @@ import styles from './Playground.module.css';
 import { FabricJSCanvas } from 'fabricjs-react';
 
 const Playground = () => {
-    const { onPlaygroundReady, inEditingMode, exitEditingMode, scaleTo, canvasDimension } = useTool();
+    const { onPlaygroundReady, inEditingMode, exitEditingMode, scaleTo, canvasDimension, deSelectAll } = useTool();
 
     const {width, height} = canvasDimension;
 
-    return <section className={styles.component} style={{ '--width': `${width}px`, '--height': `${height}px`, '--scaleTo': scaleTo } as React.CSSProperties}>
-        <div className={styles['canvas-wrapper']}>
+    return <section className={styles.component} onClick={() => deSelectAll()} style={{ '--width': `${width}px`, '--height': `${height}px`, '--scaleTo': scaleTo } as React.CSSProperties}>
+        <div className={styles['canvas-wrapper']} onClick={(event) => event.stopPropagation()}>
             <FabricJSCanvas
                 onReady={onPlaygroundReady}
             />

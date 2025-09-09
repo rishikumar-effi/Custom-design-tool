@@ -1,11 +1,18 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import styles from './Configurables.module.css';
 import useObjectSync from "../../hooks/useObjectSync";
 
-const CircleConfigurations = ({ object, handleChange }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void }) => {
+const CircleConfigurations = ({ object, handleChange, fillWithImage }: { object: any, handleChange: (prop: string | Record<string, number | string>, value?: number | string) => void, fillWithImage: (activeObject: any) => void }) => {
     const [fill, setFill] = useState<string>(object ? object.fill : '#e0e0e0');
     const [strokeColor, setStrokeColor] = useState(object ? object.stroke: '#1e2022ff');
     const [strokeWidth, setStrokeWidth] = useState<number>(object ? object.strokeWidth : 0);
+    const imageInputRef = useRef<null | HTMLInputElement>(null);
+
+    const imageHandler = useCallback((event: any) => {
+        const file = event.target.files?.[0];        
+
+        fillWithImage(file);
+    }, []);
 
     const fillHandler = useCallback((e: any) => {
         const newFill = e.target.value;
@@ -51,7 +58,12 @@ const CircleConfigurations = ({ object, handleChange }: { object: any, handleCha
         </div>
         <div className={styles.configurable}>
             <label htmlFor="set-fill">Fill</label>
-            <input type="color" name="fill" id="set-fill" value={fill} onChange={fillHandler} />
+            <div style={{display: 'flex', alignItems: 'center', gap: '.15em'}}>
+                <input type="color" name="fill" id="set-fill" value={fill} onChange={fillHandler} />
+                <span>|</span>
+                <input type="file" name="fill-image" id="set-image" ref={imageInputRef} style={{visibility: 'hidden', width: 0}} onChange={imageHandler}/>
+                <button onClick={() => imageInputRef?.current?.click()}>Upload image</button>
+            </div>
         </div>
     </>
 }
