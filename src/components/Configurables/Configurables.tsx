@@ -5,6 +5,7 @@ import TextConfigurations from "./TextConfigurations";
 import styles from './Configurables.module.css';
 import LineConfigurations from "./LineConfigurations";
 import PathConfigurations from "./PathConfigurations";
+import ImageConfigurations from "./ImageConfigurations";
 import { fabric } from 'fabric';
 
 const Configurables = ({ activeObject }: { activeObject: any }) => {
@@ -57,6 +58,7 @@ const Configurables = ({ activeObject }: { activeObject: any }) => {
                 canvas.requestRenderAll();
             });
         }
+
         reader.readAsDataURL(file);
 
     }, [activeObject]);
@@ -75,6 +77,8 @@ const Configurables = ({ activeObject }: { activeObject: any }) => {
                 return <LineConfigurations object={activeObject} handleChange={handleChange} />;
             case 'path':
                 return <PathConfigurations object={activeObject} handleChange={handleChange} />;
+            case 'image':
+                return <ImageConfigurations object={activeObject}/>;
             default:
                 return <p>No configurator available</p>
         }
