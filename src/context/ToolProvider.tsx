@@ -64,7 +64,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       canvas.discardActiveObject();
       canvas.requestRenderAll();
     }
-  },[editor]);
+  }, [editor]);
 
   const exitEditingMode = useCallback(() => {
     setIsEditingMode(false);
@@ -140,6 +140,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       fill: color,
       stroke: "#1e2022",
       strokeWidth: 0,
+      strokeUniform: true
     });
     objectProps(circle);
   }, [editor, color]);
@@ -154,6 +155,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
       top: 100,
       stroke: "#1e2022",
       strokeWidth: 0,
+      strokeUniform: true
     });
     objectProps(rect);
   }, [editor, color]);
