@@ -255,8 +255,7 @@ export const ToolProvider = ({ children }: { children: React.ReactNode }) => {
     setObjects([]);
     setActiveObject(null);
   }, [editor]);
-
-
+  
   const exportAsSVG = useCallback(async () => {
     if (!editor) return '';
 
